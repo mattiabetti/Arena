@@ -59,3 +59,29 @@ export function collegaPulsanteSchermoIntero(pulsante) {
     pulsante.textContent = document.fullscreenElement ? "Esci da schermo intero" : "Schermo intero";
   });
 }
+
+// Mette o toglie lo schermo intero. Su Xbox funziona anche dalla pressione di un tasto
+// del controller (Edge la considera come un clic).
+export function alternaSchermoIntero() {
+  const el = document.documentElement;
+  if (document.fullscreenElement) {
+    return document.exitFullscreen ? document.exitFullscreen() : Promise.reject();
+  }
+  return el.requestFullscreen ? el.requestFullscreen() : Promise.reject();
+}
+
+// Tasto ufficiale per lo schermo intero: le due levette premute insieme (L3+R3),
+// da qualsiasi controller. (View funziona ma fa perdere il "fuoco" alla pagina su Xbox.)
+// Da chiamare ogni fotogramma con il risultato di leggiController().
+// Restituisce true se in questo fotogramma è stato chiesto lo schermo intero.
+export function controllaSchermoIntero(giocatori) {
+  for (const g of giocatori) {
+    if (!g.collegato) continue;
+    const t = g.tasti;
+    if ((t.L3.appenaPremuto && t.R3.premuto) || (t.R3.appenaPremuto && t.L3.premuto)) {
+      alternaSchermoIntero().catch(() => {});
+      return true;
+    }
+  }
+  return false;
+}

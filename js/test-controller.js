@@ -2,10 +2,10 @@
 // Mostra in tempo reale cosa arriva da ogni controller e permette di muovere
 // due cerchi in una mini-arena (levetta sinistra = muovi, levetta destra = mira).
 
-import { creaSchermo, collegaPulsanteSchermoIntero, LARGHEZZA, ALTEZZA } from "./core/schermo.js?v=0.1.4";
-import { leggiController, vibra, ZONA_MORTA } from "./core/input.js?v=0.1.4";
-import { proteggiNavigazione, registro } from "./core/navigazione.js?v=0.1.4";
-import { VERSIONE } from "./core/versione.js?v=0.1.4";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero, LARGHEZZA, ALTEZZA } from "./core/schermo.js?v=0.1.5";
+import { leggiController, vibra, ZONA_MORTA } from "./core/input.js?v=0.1.5";
+import { proteggiNavigazione, registro } from "./core/navigazione.js?v=0.1.5";
+import { VERSIONE } from "./core/versione.js?v=0.1.5";
 
 const schermo = creaSchermo(document.getElementById("schermo"));
 const ctx = schermo.ctx;
@@ -25,21 +25,6 @@ const RAGGIO_PEDINA = 28;
 const VELOCITA_PEDINA = 600; // pixel al secondo
 
 let ultimoTempo = performance.now();
-
-// Esperimento: quale tasto del controller usare per lo schermo intero?
-// Si provano View e "levette premute insieme" (L3+R3).
-let esitoSchermoIntero = "prova View oppure L3+R3";
-function provaSchermoIntero(tasto) {
-  const el = document.documentElement;
-  if (document.fullscreenElement) {
-    document.exitFullscreen?.().then(() => { esitoSchermoIntero = tasto + ": uscito"; })
-      .catch(() => { esitoSchermoIntero = tasto + ": uscita rifiutata"; });
-    return;
-  }
-  if (!el.requestFullscreen) { esitoSchermoIntero = "non disponibile"; return; }
-  el.requestFullscreen().then(() => { esitoSchermoIntero = tasto + ": RIUSCITO"; })
-    .catch(() => { esitoSchermoIntero = tasto + ": rifiutato"; });
-}
 
 // Conta quante volte la pagina perde il "fuoco" (problema noto del tasto View su Xbox)
 let fuocoPerso = 0;
@@ -61,12 +46,10 @@ function ciclo(adesso) {
     p.y = Math.max(ARENA.y + RAGGIO_PEDINA, Math.min(ARENA.y + ARENA.a - RAGGIO_PEDINA, p.y));
     if (g.destra.intensita > 0) p.mira = Math.atan2(g.destra.y, g.destra.x);
     if (g.tasti.X.appenaPremuto) vibra(i, 250, 1, 1);
-    // Prove per lo schermo intero: tasto View, oppure le due levette premute insieme (L3+R3)
-    if (g.tasti.VIEW.appenaPremuto) provaSchermoIntero("View");
-    const levetteInsieme = (g.tasti.L3.appenaPremuto && g.tasti.R3.premuto) ||
-                           (g.tasti.R3.appenaPremuto && g.tasti.L3.premuto);
-    if (levetteInsieme) provaSchermoIntero("L3+R3");
   });
+
+  // Schermo intero: le due levette premute insieme (L3+R3)
+  controllaSchermoIntero(giocatori);
 
   disegna(giocatori);
   requestAnimationFrame(ciclo);
@@ -100,9 +83,8 @@ function disegna(giocatori) {
   // Riga diagnostica in fondo
   const tastiera = registro.tastiera.length ? registro.tastiera.join(", ") : "nessuno";
   testo("Tasti \"tastiera\" ricevuti da Edge: " + tastiera, 40, 1045, 24, "#8a93a6");
-  testo("Schermo intero → " + esitoSchermoIntero + "  ·  fuoco perso: " + fuocoPerso,
-        LARGHEZZA / 2 + 100, 1045, 24,
-        esitoSchermoIntero.includes("RIUSCITO") ? "#5bd45b" : "#8a93a6", "center");
+  testo("Schermo intero: premi le due levette insieme (L3+R3)  ·  fuoco perso: " + fuocoPerso,
+        LARGHEZZA / 2 + 100, 1045, 24, "#8a93a6", "center");
   testo("\"Indietro\" bloccati: " + registro.indietroBloccati, LARGHEZZA - 40, 1045, 24,
         registro.indietroBloccati ? "#ffd23f" : "#8a93a6", "right");
 }
@@ -149,7 +131,7 @@ function disegnaPannello(g, i, px, py) {
   disegnaTastoTondo("View", t.VIEW.premuto, px + 370, py + 285, 30, "#6b7488", 16);
   disegnaTastoTondo("Menu", t.MENU.premuto, px + 530, py + 285, 30, "#6b7488", 16);
   disegnaTastoTondo("Xbox", t.XBOX.premuto, px + 450, py + 225, 30, "#6b7488", 16);
-  testo("View e Menu: non usati nel gioco", px + 450, py + 330, 20, "#6b7488", "center");
+  testo("View e Menu: non usati", px + 450, py + 330, 20, "#6b7488", "center");
 
   // Levetta sinistra (in alto a sinistra) e destra (in basso a destra)
   disegnaLevetta("sinistra", g.grezzo.sinistra, g.sinistra, t.L3.premuto, px + 170, py + 330, colore);

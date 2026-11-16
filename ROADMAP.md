@@ -11,6 +11,9 @@
 - [x] Terzo test Xbox (v0.1.2): Y mette e toglie lo schermo intero (RIUSCITO), X fa vibrare
       entrambi i controller, B nei controlli di gioco arriva anche come tasto "Unidentified"
       (innocuo, viene ignorato). Pagina di test completata: obiettivo sessione 1 raggiunto.
+- [x] Quarto test Xbox (v0.1.4): View mette lo schermo intero ma fa perdere il fuoco;
+      L3+R3 funziona senza perdere il fuoco; B si accende su entrambi i controller.
+- [x] v0.1.5: DECISO schermo intero = L3+R3 (funzione comune in schermo.js), View tolto.
 - [x] v0.1.4: ogni file caricato con "?v=versione" (la Xbox mostrava ancora la 0.1.2 per la cache).
 - [x] v0.1.3: Y lasciato libero per il gioco (all'utente non piace Y per lo schermo intero;
       vuole anche B disponibile per le abilità). Prova schermo intero con View o L3+R3,
@@ -36,18 +39,17 @@
   di gioco. Serve un modo per andare a schermo intero DOPO, senza cursore.
 
 ## Da fare
-- [ ] Test v0.1.4: lo schermo intero funziona con View? e con L3+R3? Il "fuoco perso" sale?
-      Il cerchio B si accende nel riquadro del giocatore? (se sì, B è usabile per le abilità)
+- [ ] Prossima sessione: prima arena giocabile (due personaggi che si muovono e mirano a
+      tutto schermo, senza attacchi).
 - [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
-- [ ] Decidere i primi 2 personaggi (DESIGN.md).
-- [ ] Prima arena giocabile: due cerchi che si muovono e mirano, con collisione con i bordi.
+- [ ] Decidere i primi 2 personaggi (DESIGN.md): l'utente ci pensa con le figlie.
 - [ ] Attacco base (proiettile) e vita.
 - [ ] Round, vittoria, schermata di fine partita.
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] Noto (da altri progetti web su Xbox): premere View può far perdere il "fuoco" alla pagina;
-      di solito si risolve aprendo e chiudendo la Guida con il tasto Xbox.
+- [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
+      Se succede: aprire e chiudere la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan
       per le app (migliora le prestazioni di Edge).

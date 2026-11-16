@@ -16,7 +16,9 @@ Nessuno scopo commerciale.
 | Levetta destra    | mirare                         |
 | RT                | attacco base (da confermare)   |
 | LT, LB, RB        | abilità del personaggio        |
-| View / Menu       | non usati nel gioco            |
+| A, B, X, Y        | liberi per abilità/azioni      |
+| L3+R3 insieme     | schermo intero sì/no           |
+| View / Menu       | non usati (li usa Edge)        |
 
 ## Da decidere (insieme, nelle prossime sessioni)
 - Quanti round per partita, quanta vita, durata di un round.

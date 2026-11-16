@@ -30,7 +30,9 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 - Comandi twin-stick:
   - levetta sinistra = movimento
   - levetta destra = mira
-  - abilità su LB, RB, LT, RT (dorsali e grilletti); A/B/X/Y per azioni secondarie se servono.
+  - abilità su LB, RB, LT, RT (dorsali e grilletti); A/B/X/Y per azioni secondarie se servono
+    (tutti verificati funzionanti sulla Xbox).
+  - L3+R3 insieme = schermo intero (riservato, non usarlo per il gioco).
 - Zona morta radiale delle levette: 0.20 (valore in `input.js`).
 - Assegnazione giocatori: il primo controller collegato è il Giocatore 1, il secondo il Giocatore 2.
 - Mappatura standard Gamepad API (indici pulsanti):
@@ -43,12 +45,14 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 2. Cliccare col cursore l'icona del controller in fondo alla barra degli indirizzi
    → "controlli di gioco": sparisce il cursore e i controller arrivano al gioco.
    (Tenere premuto Menu NON funziona.)
-3. Lo schermo intero si mette/toglie da codice con un tasto del controller (Edge accetta la
-   pressione di un tasto del controller come "clic"; Y funziona). Y però serve al gioco:
-   tasto definitivo da scegliere (in prova View e L3+R3, v0.1.3+).
+3. Schermo intero: premere le due levette insieme (L3+R3), da qualsiasi controller.
+   Già pronto in `js/core/schermo.js` → `controllaSchermoIntero(giocatori)`, da chiamare
+   ogni fotogramma in ogni pagina. (Edge accetta un tasto del controller come "clic".)
+- View: funziona per lo schermo intero ma fa perdere il "fuoco" alla pagina → NON usarlo.
 - Premere Menu riporta ai controlli di navigazione (cursore).
 - Anche nei controlli di gioco alcuni tasti arrivano pure come eventi tastiera
   (es. B → "Unidentified"): vanno ignorati, si legge solo la Gamepad API.
+  B funziona normalmente come tasto del controller: è utilizzabile per il gioco.
 - La vibrazione (`vibra()` in input.js) funziona.
 
 ## Personaggi
