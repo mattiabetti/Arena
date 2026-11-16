@@ -94,8 +94,11 @@ function disegnaPannello(g, i, px, py) {
   testo("GIOCATORE " + (i + 1), px + 30, py + 38, 36, colore);
 
   if (!g.collegato) {
-    testo("Nessun controller", px + L / 2, py + A / 2 - 30, 40, "#8a93a6", "center");
-    testo("Accendi il controller e premi un tasto qualsiasi", px + L / 2, py + A / 2 + 25, 30, "#8a93a6", "center");
+    testo("Nessun controller", px + L / 2, py + 170, 40, "#8a93a6", "center");
+    testo("Premi un tasto qualsiasi sul controller.", px + L / 2, py + 240, 30, "#c9cfdb", "center");
+    testo("Se vedi il cursore di Edge:", px + L / 2, py + 320, 30, "#ffd23f", "center");
+    testo("tieni premuto il tasto Menu (≡)", px + L / 2, py + 365, 30, "#ffd23f", "center");
+    testo("e scegli \"Usa controlli di gioco\"", px + L / 2, py + 410, 30, "#ffd23f", "center");
     return;
   }
 
