@@ -43,8 +43,9 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 2. Cliccare col cursore l'icona del controller in fondo alla barra degli indirizzi
    → "controlli di gioco": sparisce il cursore e i controller arrivano al gioco.
    (Tenere premuto Menu NON funziona.)
-3. Lo schermo intero si mette/toglie da codice con un tasto del controller (Y funziona:
-   Edge accetta la pressione di un tasto del controller come "clic").
+3. Lo schermo intero si mette/toglie da codice con un tasto del controller (Edge accetta la
+   pressione di un tasto del controller come "clic"; Y funziona). Y però serve al gioco:
+   tasto definitivo da scegliere (in prova View e L3+R3, v0.1.3+).
 - Premere Menu riporta ai controlli di navigazione (cursore).
 - Anche nei controlli di gioco alcuni tasti arrivano pure come eventi tastiera
   (es. B → "Unidentified"): vanno ignorati, si legge solo la Gamepad API.
@@ -72,5 +73,10 @@ CLAUDE.md DESIGN.md ROADMAP.md
 ## Versione e cache
 - Ogni modifica pubblicata aggiorna `VERSIONE` in `js/core/versione.js`; la versione è mostrata
   a schermo, così sulla Xbox si vede subito se la pagina caricata è quella nuova.
+- La Xbox tiene in memoria i file JS: per questo OGNI riferimento a un file (nei tag HTML e in
+  ogni `import`) porta in coda `?v=<numero versione>`, ad es. `"./core/input.js?v=0.1.4"`.
+  A ogni nuova versione sostituire il numero in tutti i file in un colpo solo, es.:
+  `grep -rl "?v=0.1.4" . | xargs sed -i "s/?v=0.1.4/?v=0.1.5/g"`.
+  Usare sempre lo stesso `?v=` per lo stesso file, altrimenti il browser lo carica due volte.
 - GitHub Pages può impiegare 1–2 minuti a pubblicare e la cache fino a ~10 minuti:
   se la versione a schermo è vecchia, aspettare e ricaricare.
