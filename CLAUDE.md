@@ -12,8 +12,8 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 ## Piattaforma
 - Gioco web 2D in HTML5 + JavaScript puro (nessun framework, nessun passaggio di build, nessun npm).
 - Gira nel browser Edge della Xbox Series X, su TV LG 65" 4K.
-- Ospitato gratis su GitHub Pages: https://mattiabetti.github.io/arena/
-- Repository: github.com/mattiabetti/arena, ramo `main`, cartella principale.
+- Ospitato gratis su GitHub Pages: https://mattiabetti.github.io/Arena/
+- Repository: github.com/mattiabetti/Arena (nome con la A maiuscola), ramo `main`, cartella principale.
 - I file JS usano i moduli ES (`import` / `export`): la pagina va aperta via http(s)
   (GitHub Pages o un server locale), non con doppio clic sul file.
 
