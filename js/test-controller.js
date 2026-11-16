@@ -26,20 +26,24 @@ const VELOCITA_PEDINA = 600; // pixel al secondo
 
 let ultimoTempo = performance.now();
 
-// Esperimento: si può mettere lo schermo intero premendo Y sul controller?
-// (il browser potrebbe rifiutare, perché di solito lo permette solo dopo un clic)
-let esitoSchermoIntero = "premi Y per provare";
-function provaSchermoIntero() {
+// Esperimento: quale tasto del controller usare per lo schermo intero?
+// Si provano View e "levette premute insieme" (L3+R3).
+let esitoSchermoIntero = "prova View oppure L3+R3";
+function provaSchermoIntero(tasto) {
   const el = document.documentElement;
   if (document.fullscreenElement) {
-    document.exitFullscreen?.().then(() => { esitoSchermoIntero = "uscito (ok)"; })
-      .catch(() => { esitoSchermoIntero = "uscita rifiutata"; });
+    document.exitFullscreen?.().then(() => { esitoSchermoIntero = tasto + ": uscito"; })
+      .catch(() => { esitoSchermoIntero = tasto + ": uscita rifiutata"; });
     return;
   }
   if (!el.requestFullscreen) { esitoSchermoIntero = "non disponibile"; return; }
-  el.requestFullscreen().then(() => { esitoSchermoIntero = "RIUSCITO"; })
-    .catch(() => { esitoSchermoIntero = "rifiutato dal browser"; });
+  el.requestFullscreen().then(() => { esitoSchermoIntero = tasto + ": RIUSCITO"; })
+    .catch(() => { esitoSchermoIntero = tasto + ": rifiutato"; });
 }
+
+// Conta quante volte la pagina perde il "fuoco" (problema noto del tasto View su Xbox)
+let fuocoPerso = 0;
+window.addEventListener("blur", () => { fuocoPerso++; });
 
 function ciclo(adesso) {
   const dt = Math.min(0.05, (adesso - ultimoTempo) / 1000);
@@ -57,7 +61,11 @@ function ciclo(adesso) {
     p.y = Math.max(ARENA.y + RAGGIO_PEDINA, Math.min(ARENA.y + ARENA.a - RAGGIO_PEDINA, p.y));
     if (g.destra.intensita > 0) p.mira = Math.atan2(g.destra.y, g.destra.x);
     if (g.tasti.X.appenaPremuto) vibra(i, 250, 1, 1);
-    if (g.tasti.Y.appenaPremuto) provaSchermoIntero();
+    // Prove per lo schermo intero: tasto View, oppure le due levette premute insieme (L3+R3)
+    if (g.tasti.VIEW.appenaPremuto) provaSchermoIntero("View");
+    const levetteInsieme = (g.tasti.L3.appenaPremuto && g.tasti.R3.premuto) ||
+                           (g.tasti.R3.appenaPremuto && g.tasti.L3.premuto);
+    if (levetteInsieme) provaSchermoIntero("L3+R3");
   });
 
   disegna(giocatori);
@@ -92,8 +100,9 @@ function disegna(giocatori) {
   // Riga diagnostica in fondo
   const tastiera = registro.tastiera.length ? registro.tastiera.join(", ") : "nessuno";
   testo("Tasti \"tastiera\" ricevuti da Edge: " + tastiera, 40, 1045, 24, "#8a93a6");
-  testo("Schermo intero con Y: " + esitoSchermoIntero, LARGHEZZA / 2 + 120, 1045, 24,
-        esitoSchermoIntero === "RIUSCITO" ? "#5bd45b" : "#8a93a6", "center");
+  testo("Schermo intero → " + esitoSchermoIntero + "  ·  fuoco perso: " + fuocoPerso,
+        LARGHEZZA / 2 + 100, 1045, 24,
+        esitoSchermoIntero.includes("RIUSCITO") ? "#5bd45b" : "#8a93a6", "center");
   testo("\"Indietro\" bloccati: " + registro.indietroBloccati, LARGHEZZA - 40, 1045, 24,
         registro.indietroBloccati ? "#ffd23f" : "#8a93a6", "right");
 }

@@ -11,6 +11,9 @@
 - [x] Terzo test Xbox (v0.1.2): Y mette e toglie lo schermo intero (RIUSCITO), X fa vibrare
       entrambi i controller, B nei controlli di gioco arriva anche come tasto "Unidentified"
       (innocuo, viene ignorato). Pagina di test completata: obiettivo sessione 1 raggiunto.
+- [x] v0.1.3: Y lasciato libero per il gioco (all'utente non piace Y per lo schermo intero;
+      vuole anche B disponibile per le abilità). Prova schermo intero con View o L3+R3,
+      e contatore "fuoco perso".
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -32,8 +35,9 @@
   di gioco. Serve un modo per andare a schermo intero DOPO, senza cursore.
 
 ## Da fare
-- [ ] Nel gioco vero: scegliere quale tasto mette lo schermo intero (es. Y nei menu,
-      prima della partita) senza scontrarsi con le abilità.
+- [ ] Test v0.1.3: lo schermo intero funziona con View? e con L3+R3? Il "fuoco perso" sale?
+      Il cerchio B si accende nel riquadro del giocatore? (se sì, B è usabile per le abilità)
+- [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md).
 - [ ] Prima arena giocabile: due cerchi che si muovono e mirano, con collisione con i bordi.
