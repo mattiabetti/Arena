@@ -14,6 +14,7 @@
 - [x] Quarto test Xbox (v0.1.4): View mette lo schermo intero ma fa perdere il fuoco;
       L3+R3 funziona senza perdere il fuoco; B si accende su entrambi i controller.
 - [x] v0.1.5: DECISO schermo intero = L3+R3 (funzione comune in schermo.js), View tolto.
+      Verificato sulla Xbox: L3+R3 ok (arriva anche come "Unidentified", innocuo), Y libero.
 - [x] v0.1.4: ogni file caricato con "?v=versione" (la Xbox mostrava ancora la 0.1.2 per la cache).
 - [x] v0.1.3: Y lasciato libero per il gioco (all'utente non piace Y per lo schermo intero;
       vuole anche B disponibile per le abilità). Prova schermo intero con View o L3+R3,
