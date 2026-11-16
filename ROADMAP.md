@@ -8,6 +8,9 @@
 - [x] v0.1.1: la pagina di test spiega come passare a "Usa controlli di gioco".
 - [x] Secondo test Xbox (v0.1.1) in "controlli di gioco": entrambi i controller funzionano.
 - [x] v0.1.2: istruzioni corrette (icona nella barra indirizzi); esperimento "schermo intero con Y".
+- [x] Terzo test Xbox (v0.1.2): Y mette e toglie lo schermo intero (RIUSCITO), X fa vibrare
+      entrambi i controller, B nei controlli di gioco arriva anche come tasto "Unidentified"
+      (innocuo, viene ignorato). Pagina di test completata: obiettivo sessione 1 raggiunto.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -29,9 +32,8 @@
   di gioco. Serve un modo per andare a schermo intero DOPO, senza cursore.
 
 ## Da fare
-- [ ] Test v0.1.2: nei controlli di gioco, premere Y mette lo schermo intero?
-      In alternativa provare a tenere premuto View (scorciatoia di Edge, segnalata da altri).
-- [ ] Verificare nei controlli di gioco: vibrazione con X, B esce dallo schermo intero?
+- [ ] Nel gioco vero: scegliere quale tasto mette lo schermo intero (es. Y nei menu,
+      prima della partita) senza scontrarsi con le abilità.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md).
 - [ ] Prima arena giocabile: due cerchi che si muovono e mirano, con collisione con i bordi.
@@ -40,7 +42,6 @@
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] Da verificare: la vibrazione funziona su Edge Xbox?
 - [ ] Noto (da altri progetti web su Xbox): premere View può far perdere il "fuoco" alla pagina;
       di solito si risolve aprendo e chiudendo la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan

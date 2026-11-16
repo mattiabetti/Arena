@@ -38,6 +38,18 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
   10 L3 · 11 R3 · 12 su · 13 giù · 14 sinistra · 15 destra · 16 Xbox.
   Assi: 0/1 levetta sinistra X/Y, 2/3 levetta destra X/Y (Y positivo = in basso).
 
+## Avvio sulla Xbox (verificato)
+1. Aprire la pagina in Edge (NON a schermo intero).
+2. Cliccare col cursore l'icona del controller in fondo alla barra degli indirizzi
+   → "controlli di gioco": sparisce il cursore e i controller arrivano al gioco.
+   (Tenere premuto Menu NON funziona.)
+3. Lo schermo intero si mette/toglie da codice con un tasto del controller (Y funziona:
+   Edge accetta la pressione di un tasto del controller come "clic").
+- Premere Menu riporta ai controlli di navigazione (cursore).
+- Anche nei controlli di gioco alcuni tasti arrivano pure come eventi tastiera
+  (es. B → "Unidentified"): vanno ignorati, si legge solo la Gamepad API.
+- La vibrazione (`vibra()` in input.js) funziona.
+
 ## Personaggi
 - Ogni personaggio è una scheda di configurazione in `js/personaggi/` (un file per personaggio).
 - La scheda contiene solo dati (nome, colore, velocità, vita, abilità con valori numerici).
