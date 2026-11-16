@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arena</title>
+  <link rel="stylesheet" href="css/stile.css?v=0.1.0">
+</head>
+<body>
+  <div class="menu">
+    <h1>ARENA</h1>
+    <a class="pulsante" href="test-controller.html">Test controller</a>
+    <a class="pulsante disattivato" href="#">Gioca (in arrivo)</a>
+    <div class="versione" id="versione"></div>
+  </div>
+  <script type="module">
+    import { VERSIONE } from "./js/core/versione.js?v=0.1.0";
+    document.getElementById("versione").textContent = "versione " + VERSIONE;
+  </script>
+</body>
+</html>
