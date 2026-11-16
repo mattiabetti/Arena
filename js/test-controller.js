@@ -26,6 +26,21 @@ const VELOCITA_PEDINA = 600; // pixel al secondo
 
 let ultimoTempo = performance.now();
 
+// Esperimento: si può mettere lo schermo intero premendo Y sul controller?
+// (il browser potrebbe rifiutare, perché di solito lo permette solo dopo un clic)
+let esitoSchermoIntero = "premi Y per provare";
+function provaSchermoIntero() {
+  const el = document.documentElement;
+  if (document.fullscreenElement) {
+    document.exitFullscreen?.().then(() => { esitoSchermoIntero = "uscito (ok)"; })
+      .catch(() => { esitoSchermoIntero = "uscita rifiutata"; });
+    return;
+  }
+  if (!el.requestFullscreen) { esitoSchermoIntero = "non disponibile"; return; }
+  el.requestFullscreen().then(() => { esitoSchermoIntero = "RIUSCITO"; })
+    .catch(() => { esitoSchermoIntero = "rifiutato dal browser"; });
+}
+
 function ciclo(adesso) {
   const dt = Math.min(0.05, (adesso - ultimoTempo) / 1000);
   ultimoTempo = adesso;
@@ -42,6 +57,7 @@ function ciclo(adesso) {
     p.y = Math.max(ARENA.y + RAGGIO_PEDINA, Math.min(ARENA.y + ARENA.a - RAGGIO_PEDINA, p.y));
     if (g.destra.intensita > 0) p.mira = Math.atan2(g.destra.y, g.destra.x);
     if (g.tasti.X.appenaPremuto) vibra(i, 250, 1, 1);
+    if (g.tasti.Y.appenaPremuto) provaSchermoIntero();
   });
 
   disegna(giocatori);
@@ -76,6 +92,8 @@ function disegna(giocatori) {
   // Riga diagnostica in fondo
   const tastiera = registro.tastiera.length ? registro.tastiera.join(", ") : "nessuno";
   testo("Tasti \"tastiera\" ricevuti da Edge: " + tastiera, 40, 1045, 24, "#8a93a6");
+  testo("Schermo intero con Y: " + esitoSchermoIntero, LARGHEZZA / 2 + 120, 1045, 24,
+        esitoSchermoIntero === "RIUSCITO" ? "#5bd45b" : "#8a93a6", "center");
   testo("\"Indietro\" bloccati: " + registro.indietroBloccati, LARGHEZZA - 40, 1045, 24,
         registro.indietroBloccati ? "#ffd23f" : "#8a93a6", "right");
 }
@@ -96,9 +114,9 @@ function disegnaPannello(g, i, px, py) {
   if (!g.collegato) {
     testo("Nessun controller", px + L / 2, py + 170, 40, "#8a93a6", "center");
     testo("Premi un tasto qualsiasi sul controller.", px + L / 2, py + 240, 30, "#c9cfdb", "center");
-    testo("Se vedi il cursore di Edge:", px + L / 2, py + 320, 30, "#ffd23f", "center");
-    testo("tieni premuto il tasto Menu (≡)", px + L / 2, py + 365, 30, "#ffd23f", "center");
-    testo("e scegli \"Usa controlli di gioco\"", px + L / 2, py + 410, 30, "#ffd23f", "center");
+    testo("Se vedi il cursore di Edge: esci dallo schermo intero", px + L / 2, py + 320, 30, "#ffd23f", "center");
+    testo("e clicca l'icona del controller in fondo", px + L / 2, py + 365, 30, "#ffd23f", "center");
+    testo("alla barra degli indirizzi (\"controlli di gioco\")", px + L / 2, py + 410, 30, "#ffd23f", "center");
     return;
   }
 

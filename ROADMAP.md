@@ -6,6 +6,8 @@
 - [x] Pubblicato su GitHub Pages: https://mattiabetti.github.io/Arena/
 - [x] Primo test sulla Xbox (v0.1.0), vedi "Risultati test" sotto.
 - [x] v0.1.1: la pagina di test spiega come passare a "Usa controlli di gioco".
+- [x] Secondo test Xbox (v0.1.1) in "controlli di gioco": entrambi i controller funzionano.
+- [x] v0.1.2: istruzioni corrette (icona nella barra indirizzi); esperimento "schermo intero con Y".
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -16,11 +18,20 @@
   (contatore "Indietro bloccati" sale). Il blocco del "torna indietro" funziona.
 - RT e levetta destra nascondono il cursore; LT, A, X nessun effetto visibile.
 - Causa: Edge su Xbox ha due modalità, "controlli di navigazione" (predefinita) e
-  "controlli di gioco". Si cambia tenendo premuto Menu e scegliendo "Usa controlli di gioco".
+  "controlli di gioco".
+
+## Come si entra nei controlli di gioco (verificato sulla Xbox)
+- Tenere premuto Menu NON funziona (né col controller 1 né col 2).
+- Funziona: fuori dallo schermo intero, cliccare col cursore l'icona del controller
+  in fondo alla barra degli indirizzi.
+- Premere Menu nei controlli di gioco riporta ai controlli di navigazione.
+- Problema: da schermo intero non si vede la barra, quindi non si può entrare nei controlli
+  di gioco. Serve un modo per andare a schermo intero DOPO, senza cursore.
 
 ## Da fare
-- [ ] Ripetere il test in modalità "Usa controlli di gioco": controller rilevati? tutti i tasti?
-      vibrazione? B esce ancora dallo schermo intero?
+- [ ] Test v0.1.2: nei controlli di gioco, premere Y mette lo schermo intero?
+      In alternativa provare a tenere premuto View (scorciatoia di Edge, segnalata da altri).
+- [ ] Verificare nei controlli di gioco: vibrazione con X, B esce dallo schermo intero?
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md).
 - [ ] Prima arena giocabile: due cerchi che si muovono e mirano, con collisione con i bordi.
