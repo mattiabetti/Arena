@@ -35,8 +35,8 @@
 - Funziona: fuori dallo schermo intero, cliccare col cursore l'icona del controller
   in fondo alla barra degli indirizzi.
 - Premere Menu nei controlli di gioco riporta ai controlli di navigazione.
-- Problema: da schermo intero non si vede la barra, quindi non si può entrare nei controlli
-  di gioco. Serve un modo per andare a schermo intero DOPO, senza cursore.
+- Quindi: prima si attivano i controlli di gioco (fuori dallo schermo intero), poi si va
+  a schermo intero con L3+R3. Risolto.
 
 ## Da fare
 - [ ] Prossima sessione: prima arena giocabile (due personaggi che si muovono e mirano a
