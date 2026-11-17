@@ -65,10 +65,13 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 ## Struttura cartelle
 ```
 index.html            pagina iniziale (menu)
+gioco.html            pagina della partita (arena)
 test-controller.html  pagina di test dei controller
 css/stile.css         stile comune
 js/core/              schermo, input, utilità condivise
 js/personaggi/        schede dei personaggi
+js/arene/             schede delle arene (forma, pilastri, punti di partenza)
+js/gioco.js           logica della partita
 js/test-controller.js logica della pagina di test
 CLAUDE.md DESIGN.md ROADMAP.md
 .nojekyll             dice a GitHub Pages di pubblicare i file così come sono
@@ -80,7 +83,8 @@ CLAUDE.md DESIGN.md ROADMAP.md
 - La Xbox tiene in memoria i file JS: per questo OGNI riferimento a un file (nei tag HTML e in
   ogni `import`) porta in coda `?v=<numero versione>`, ad es. `"./core/input.js?v=0.1.4"`.
   A ogni nuova versione sostituire il numero in tutti i file in un colpo solo, es.:
-  `grep -rl "?v=0.1.4" . | xargs sed -i "s/?v=0.1.4/?v=0.1.5/g"`.
+  `grep -rl "?v=0.1.4" --include=*.html --include=*.js . | xargs sed -i "s/?v=0.1.4/?v=0.1.5/g"`
+  (solo file .html e .js: senza il filtro il comando modifica anche questo esempio).
   Usare sempre lo stesso `?v=` per lo stesso file, altrimenti il browser lo carica due volte.
 - GitHub Pages può impiegare 1–2 minuti a pubblicare e la cache fino a ~10 minuti:
   se la versione a schermo è vecchia, aspettare e ricaricare.

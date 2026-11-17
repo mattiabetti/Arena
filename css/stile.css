@@ -65,3 +65,12 @@ canvas {
 .menu h1 { font-size: 12vh; margin: 0; letter-spacing: 0.1em; }
 .menu .pulsante { font-size: 4vh; min-width: 30vw; text-align: center; }
 .menu .versione { position: fixed; bottom: 2vh; font-size: 2vh; opacity: 0.6; }
+
+/* Nella pagina della partita la barra sta in basso, per non coprire nomi e vita */
+.barra.in-basso { top: auto; bottom: 1vh; right: auto; left: 50%; transform: translateX(-50%); align-items: center; white-space: nowrap; }
+.barra .avviso {
+  font-size: 2.6vh;
+  padding: 0.4em 0.8em;
+  background: rgba(7, 9, 13, 0.85);
+  border-radius: 0.4em;
+}

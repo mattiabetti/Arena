@@ -19,6 +19,12 @@
 - [x] v0.1.3: Y lasciato libero per il gioco (all'utente non piace Y per lo schermo intero;
       vuole anche B disponibile per le abilità). Prova schermo intero con View o L3+R3,
       e contatore "fuoco perso".
+- [x] Sessione 2 (2026-11-17), v0.2.0: prima arena giocabile (`gioco.html`, `js/gioco.js`).
+      Pulsante "Gioca" attivo nel menu. Arena rettangolare con 4 pilastri (scheda in
+      `js/arene/prima-arena.js`), personaggio provvisorio "Recluta" (`js/personaggi/recluta.js`)
+      usato da entrambi. Movimento, linea di mira, urti con muri/pilastri/avversario,
+      barre della vita (ancora senza danni), contatore fps. Provata solo sul PC con
+      controller simulati: DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -40,16 +46,21 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Prossima sessione: prima arena giocabile (due personaggi che si muovono e mirano a
-      tutto schermo, senza attacchi).
+- [ ] Test Xbox della v0.2.0 (vedi "Da verificare" sotto), poi eventuali ritocchi.
+- [ ] Prossima sessione (dopo il test): attacco base (proiettile su RT) che si ferma sui
+      pilastri, e vita che scende.
 - [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md): l'utente ci pensa con le figlie.
-- [ ] Attacco base (proiettile) e vita.
 - [ ] Round, vittoria, schermata di fine partita.
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
+- [ ] v0.2.0: i due personaggi si muovono e mirano? La velocità (420) va bene?
+- [ ] v0.2.0: quanti fps segna in alto al centro, a schermo intero? (obiettivo 60)
+- [ ] v0.2.0: a schermo intero si vede tutta l'arena o la TV taglia i bordi?
+- [ ] v0.2.0: piace che, a levetta destra ferma, il personaggio guardi dove cammina?
+      (si cambia con `MIRA_SEGUE_MOVIMENTO` in `js/gioco.js`)
 - [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
       Se succede: aprire e chiudere la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan
