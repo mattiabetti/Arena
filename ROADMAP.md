@@ -58,7 +58,8 @@
       riusata, cambi di finestra raccolti, niente ritagli (clip) nel disegno di ogni
       fotogramma, vibrazioni ravvicinate saltate. Sul PC un fotogramma costa ~1/3 di prima.
       Numeri di controllo a schermo (versione, fps, risoluzione, memoria).
-      DA VERIFICARE SULLA XBOX.
+- [x] Test Xbox v0.7.1: PROBLEMA RISOLTO. Fluido, 60-62 fps, memoria fissa a 10 MB per tutta
+      la sessione; tornando ai controlli cursore e alla Home della Xbox tutto reattivo.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -80,8 +81,8 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.7.1: prima di tutto prontezza dei comandi e console dopo il gioco.
-      Se va bene, poi il resto (vedi "Da verificare" sotto).
+- [ ] Prossima sessione: verificare con calma le novità di v0.6/v0.7 (vedi "Da verificare"),
+      poi decidere il passo successivo (nuove arene, abilità su LB/RB, nomi dei personaggi...).
 - [ ] Bilanciamento dei personaggi: più avanti, quando lo decide l'utente.
 - [ ] Abilità su LB / RB (es. scudo, area) per dare più varietà ai personaggi.
 - [ ] Altre arene (simmetriche), da inventare insieme. Poi forse un menu per scegliere l'arena.
@@ -92,9 +93,6 @@
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] v0.7.1: i comandi rispondono subito (gioco e scelta personaggi)? Anche dopo 3-4 partite?
-- [ ] v0.7.1: la memoria (MB in alto) resta più o meno uguale partita dopo partita?
-- [ ] v0.7.1: premendo il tasto Xbox dopo aver giocato, la console è veloce?
 - [ ] v0.7.1: l'immagine a 1920x1080 è abbastanza nitida sulla TV?
 - [ ] v0.6.0: la nuova grandezza dei personaggi va bene?
 - [ ] v0.6.0: Fatina e Guerriera piacciono? Si capisce chi è chi (anello blu/rosso)?
