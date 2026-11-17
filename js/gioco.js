@@ -1,13 +1,14 @@
-// Pagina della partita: la prima arena giocabile.
-// Due giocatori si muovono (levetta sinistra) e mirano (levetta destra).
-// Per ora niente attacchi: solo movimento, mira e urti con muri, pilastri e avversario.
+// Pagina della partita.
+// Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
+// della loro scheda (per ora il colpo su RT). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.2.0";
-import { leggiController } from "./core/input.js?v=0.2.0";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.2.0";
-import { VERSIONE } from "./core/versione.js?v=0.2.0";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.2.0";
-import ARENA from "./arene/prima-arena.js?v=0.2.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.3.0";
+import { leggiController, vibra } from "./core/input.js?v=0.3.0";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.3.0";
+import { VERSIONE } from "./core/versione.js?v=0.3.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.3.0";
+import ARENA from "./arene/prima-arena.js?v=0.3.0";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.3.0";
 
 // ---------- Impostazioni facili da cambiare ----------
 
@@ -17,6 +18,9 @@ const MIRA_SEGUE_MOVIMENTO = true;
 
 // Lunghezza della linea di mira davanti al personaggio (pixel).
 const LUNGHEZZA_MIRINO = 260;
+
+// Secondi di pausa dopo un K.O., prima di ricominciare.
+const PAUSA_DOPO_KO = 3;
 
 // Colori dei due giocatori: Giocatore 1 blu, Giocatore 2 rosso.
 const SQUADRE = [
@@ -50,12 +54,61 @@ function creaCombattente(numero) {
     y: partenza.y,
     mira: partenza.mira * GRADI, // direzione in cui guarda (in radianti)
     vita: scheda.vita,
+    vitaMostrata: scheda.vita, // la barra scende piano fino alla vita vera
+    ricariche: {},     // secondi che mancano prima di poter riusare ogni abilità
+    lampo: 0,          // secondi di "lampo bianco" dopo essere stato colpito
     presente: false,   // c'è un controller collegato per questo giocatore?
     mirando: false,    // la levetta destra è mossa?
   };
 }
 
+// Rimette un giocatore al punto di partenza, con la vita piena (il controller resta collegato).
+function rimettiInPartenza(c) {
+  const nuovo = creaCombattente(c.numero);
+  nuovo.presente = c.presente;
+  Object.assign(c, nuovo);
+}
+
 const combattenti = [creaCombattente(0), creaCombattente(1)];
+
+// Stato della partita: "gioco" mentre si combatte, "ko" durante la pausa dopo un K.O.
+const partita = { fase: "gioco", timer: 0, vincitore: null };
+
+// "Mondo": tutto ciò che le abilità possono vedere e toccare.
+const mondo = {
+  arena: ARENA,
+  combattenti,
+  proiettili: [],
+  effetti: [],      // piccoli cerchi che si allargano (impatti)
+  effetto(x, y, colore, forza = 1) {
+    mondo.effetti.push({ x, y, colore, forza, t: 0, durata: 0.3 });
+  },
+  colpisci(bersaglio, danno, colpo) {
+    if (partita.fase !== "gioco") return;
+    bersaglio.vita = Math.max(0, bersaglio.vita - danno);
+    bersaglio.lampo = 0.15;
+    mondo.effetto(colpo.x, colpo.y, colpo.colore, 1.8);
+    vibra(bersaglio.numero, 140, 0.6, 0.9);
+    if (bersaglio.vita === 0) koDi(bersaglio, colpo.tiratore);
+  },
+};
+
+function koDi(sconfitto, vincitore) {
+  partita.fase = "ko";
+  partita.timer = PAUSA_DOPO_KO;
+  partita.vincitore = vincitore;
+  mondo.proiettili = [];
+  mondo.effetto(sconfitto.x, sconfitto.y, "#ffffff", 4);
+  vibra(sconfitto.numero, 500, 1, 1);
+}
+
+function nuovoRound() {
+  for (const c of combattenti) rimettiInPartenza(c);
+  mondo.proiettili = [];
+  mondo.effetti = [];
+  partita.fase = "gioco";
+  partita.vincitore = null;
+}
 
 // ---------- Ciclo del gioco (una volta per fotogramma) ----------
 
@@ -80,11 +133,20 @@ function ciclo(adesso) {
 }
 
 function aggiorna(giocatori, dt) {
+  // Pausa dopo un K.O.: si aspetta e poi si ricomincia
+  if (partita.fase === "ko") {
+    partita.timer -= dt;
+    if (partita.timer <= 0) nuovoRound();
+  }
+
   giocatori.forEach((g, i) => {
     const c = combattenti[i];
     c.presente = g.collegato;
     c.mirando = false;
-    if (!g.collegato) return;
+    c.lampo = Math.max(0, c.lampo - dt);
+    // La barra della vita "rincorre" la vita vera (si vede quanto si è appena perso)
+    if (c.vitaMostrata > c.vita) c.vitaMostrata = Math.max(c.vita, c.vitaMostrata - 25 * dt);
+    if (!g.collegato || partita.fase !== "gioco") return;
 
     // Movimento: la levetta sinistra dà direzione e velocità
     c.x += g.sinistra.x * c.scheda.velocita * dt;
@@ -97,9 +159,28 @@ function aggiorna(giocatori, dt) {
     } else if (MIRA_SEGUE_MOVIMENTO && g.sinistra.intensita > 0) {
       c.mira = Math.atan2(g.sinistra.y, g.sinistra.x);
     }
+
+    // Abilità: per ogni tasto della scheda, se è premuto e la ricarica è finita, si usa.
+    // (Tenendo premuto, l'abilità riparte appena è di nuovo pronta.)
+    for (const [tasto, dati] of Object.entries(c.scheda.abilita)) {
+      c.ricariche[tasto] = Math.max(0, (c.ricariche[tasto] || 0) - dt);
+      const tipo = TIPI_ABILITA[dati.tipo];
+      if (!tipo || !g.tasti[tasto]) continue;
+      if (g.tasti[tasto].premuto && c.ricariche[tasto] === 0) {
+        tipo.usa(c, dati, mondo);
+        c.ricariche[tasto] = dati.ricarica;
+      }
+    }
   });
 
   risolviUrti();
+
+  // Ogni tipo di abilità aggiorna le sue cose (es. i colpi in volo)
+  for (const tipo of Object.values(TIPI_ABILITA)) tipo.aggiorna?.(mondo, dt);
+
+  // Effetti di impatto
+  for (const e of mondo.effetti) e.t += dt;
+  mondo.effetti = mondo.effetti.filter((e) => e.t < e.durata);
 }
 
 // ---------- Urti ----------
@@ -185,7 +266,36 @@ function disegna() {
   const inOrdine = [...combattenti].sort((a, b) => a.y - b.y);
   for (const c of inOrdine) disegnaCombattente(c);
 
+  for (const tipo of Object.values(TIPI_ABILITA)) tipo.disegna?.(ctx, mondo);
+  disegnaEffetti();
+
   disegnaIntestazione();
+  if (partita.fase === "ko") disegnaKo();
+}
+
+// Impatti: un anello che si allarga e svanisce
+function disegnaEffetti() {
+  for (const e of mondo.effetti) {
+    const avanzamento = e.t / e.durata; // da 0 a 1
+    ctx.globalAlpha = 1 - avanzamento;
+    ctx.strokeStyle = e.colore;
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.arc(e.x, e.y, 10 + avanzamento * 26 * e.forza, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+}
+
+// Scritta grande dopo il K.O.
+function disegnaKo() {
+  const v = partita.vincitore.squadra;
+  ctx.globalAlpha = 0.7;
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, 440, 1920, 260);
+  ctx.globalAlpha = 1;
+  testo(v.nome + " VINCE!", 960, 540, 96, v.colore, "center", true);
+  testo("Nuovo round tra " + Math.max(1, Math.ceil(partita.timer)) + "…", 960, 636, 40, "#f2f4f8", "center");
 }
 
 function disegnaArena() {
@@ -252,7 +362,7 @@ function disegnaArena() {
 // Linea di mira tratteggiata davanti al personaggio
 // (più marcata quando si usa la levetta destra).
 function disegnaMira(c) {
-  if (!c.presente) return;
+  if (!c.presente || c.vita <= 0) return;
   const r = c.scheda.raggio;
   const dx = Math.cos(c.mira), dy = Math.sin(c.mira);
   const fineX = c.x + dx * LUNGHEZZA_MIRINO, fineY = c.y + dy * LUNGHEZZA_MIRINO;
@@ -283,8 +393,9 @@ function disegnaCombattente(c) {
   const r = c.scheda.raggio;
   const s = c.squadra;
   const fantasma = !c.presente; // senza controller: disegnato trasparente
+  const sconfitto = c.vita <= 0;
 
-  ctx.globalAlpha = fantasma ? 0.3 : 1;
+  ctx.globalAlpha = fantasma ? 0.3 : (sconfitto ? 0.45 : 1);
 
   // Ombra
   ctx.globalAlpha *= 0.45;
@@ -292,7 +403,7 @@ function disegnaCombattente(c) {
   ctx.ellipse(c.x + 4, c.y + r * 0.75, r * 0.95, r * 0.45, 0, 0, Math.PI * 2);
   ctx.fillStyle = "#000";
   ctx.fill();
-  ctx.globalAlpha = fantasma ? 0.3 : 1;
+  ctx.globalAlpha = fantasma ? 0.3 : (sconfitto ? 0.45 : 1);
 
   const dx = Math.cos(c.mira), dy = Math.sin(c.mira);
 
@@ -306,8 +417,9 @@ function disegnaCombattente(c) {
   ctx.fill();
 
   // Corpo: bordo scuro, interno colorato, simbolo del personaggio al centro
-  cerchio(c.x, c.y, r, s.scuro);
-  cerchio(c.x, c.y, r - 6, s.colore);
+  const colorePieno = c.lampo > 0 ? "#ffffff" : (sconfitto ? "#6b7385" : s.colore);
+  cerchio(c.x, c.y, r, sconfitto ? "#3a4052" : s.scuro);
+  cerchio(c.x, c.y, r - 6, colorePieno);
   cerchio(c.x, c.y, r * 0.32, c.scheda.colore);
 
   // Sigla sopra la testa (sotto i piedi se il personaggio è vicino al bordo in alto,
@@ -344,13 +456,24 @@ function disegnaIntestazione() {
     ctx.roundRect(x, y, larghezza, altezza, 8);
     ctx.fillStyle = "#2a3242";
     ctx.fill();
-    if (quota > 0) {
-      const piena = larghezza * quota;
+    // Parte bianca: vita appena persa, che si svuota piano
+    const quotaMostrata = Math.max(0, c.vitaMostrata / c.scheda.vita);
+    for (const [q, colore] of [[quotaMostrata, "#ffffff"], [quota, s.colore]]) {
+      if (q <= 0) continue;
+      const piena = larghezza * q;
       ctx.beginPath();
       ctx.roundRect(aSinistra ? x : x + larghezza - piena, y, piena, altezza, 8);
-      ctx.fillStyle = s.colore;
+      ctx.fillStyle = colore;
       ctx.fill();
     }
+    // Numero con contorno scuro, così si legge anche sopra la parte bianca
+    ctx.font = 'bold 28px "Segoe UI", system-ui, sans-serif';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.lineWidth = 4;
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "rgba(10, 12, 18, 0.7)";
+    ctx.strokeText(Math.ceil(c.vita) + " / " + c.scheda.vita, x + larghezza / 2, y + altezza / 2 + 1);
     testo(Math.ceil(c.vita) + " / " + c.scheda.vita, x + larghezza / 2, y + altezza / 2 + 1, 28, "#ffffff", "center", true);
     ctx.globalAlpha = 1;
   }

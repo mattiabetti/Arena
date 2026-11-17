@@ -15,7 +15,8 @@ export default {
 
   // Abilità: su quale tasto, che tipo, e i suoi numeri.
   abilita: {
-    RT: { nome: "Colpo", tipo: "proiettile", danno: 10, ricarica: 0.5, velocita: 900, raggio: 10 },
+    // tipi già funzionanti: "proiettile" (vedi js/abilita/). Gli altri sono esempi futuri.
+    RT: { nome: "Colpo", tipo: "proiettile", danno: 10, ricarica: 0.5, velocita: 900, raggio: 12, gittata: 1000 },
     LT: { nome: "Scatto", tipo: "scatto", distanza: 250, ricarica: 4 },
     RB: { nome: "Scudo", tipo: "scudo", durata: 1.5, ricarica: 8 },
     LB: { nome: "Esplosione", tipo: "area", danno: 20, raggioArea: 150, ricarica: 10 },

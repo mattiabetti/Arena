@@ -59,6 +59,10 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 - Ogni personaggio è una scheda di configurazione in `js/personaggi/` (un file per personaggio).
 - La scheda contiene solo dati (nome, colore, velocità, vita, abilità con valori numerici).
   Il codice che fa funzionare le abilità sta altrove e legge la scheda.
+- Ogni abilità della scheda ha un `tipo` (es. "proiettile"): il codice del tipo sta in
+  `js/abilita/<tipo>.js` con tre funzioni `usa` / `aggiorna` / `disegna`, registrato in
+  `js/abilita/indice.js`. Tipi non ancora scritti vengono ignorati.
+- Tenendo premuto il tasto, un'abilità si ripete appena finisce la sua `ricarica`.
 - Aggiungere un personaggio = copiare `js/personaggi/modello.js`, cambiare i valori e
   registrarlo in `js/personaggi/indice.js`.
 
@@ -71,6 +75,7 @@ css/stile.css         stile comune
 js/core/              schermo, input, utilità condivise
 js/personaggi/        schede dei personaggi
 js/arene/             schede delle arene (forma, pilastri, punti di partenza)
+js/abilita/           codice dei TIPI di abilità (es. proiettile.js) + indice.js con l'elenco
 js/gioco.js           logica della partita
 js/test-controller.js logica della pagina di test
 CLAUDE.md DESIGN.md ROADMAP.md

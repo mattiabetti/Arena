@@ -14,7 +14,7 @@ Nessuno scopo commerciale.
 |-------------------|--------------------------------|
 | Levetta sinistra  | muoversi                       |
 | Levetta destra    | mirare                         |
-| RT                | attacco base (da confermare)   |
+| RT                | colpo base (tenere premuto = spara di continuo) |
 | LT, LB, RB        | abilità del personaggio        |
 | A, B, X, Y        | liberi per abilità/azioni      |
 | L3+R3 insieme     | schermo intero sì/no           |
@@ -28,8 +28,17 @@ Nessuno scopo commerciale.
   il personaggio guarda dove cammina.
 - I personaggi non si attraversano: si spingono a vicenda.
 
+## Colpo e vita (v0.3.0)
+- Colpo base su RT: proiettile nel colore del giocatore, parte nella direzione della mira.
+  Danno 10, un colpo ogni 0,5 s, velocità 900, sparisce dopo 1000 pixel.
+- Il colpo si ferma su muri e pilastri (ci si può riparare dietro).
+- Vita 100: servono 10 colpi. Chi viene colpito lampeggia di bianco e il suo controller vibra;
+  la barra mostra in bianco la vita appena persa.
+- A vita zero: scritta "GIOCATORE X VINCE!", pausa di 3 secondi, poi nuovo round
+  (tutti al punto di partenza con la vita piena). Per ora non si contano i round vinti.
+
 ## Da decidere (insieme, nelle prossime sessioni)
-- Quanti round per partita, quanta vita, durata di un round.
+- Quanti round per partita, durata di un round.
 - Forma e ostacoli definitivi dell'arena (per ora quella provvisoria qui sopra).
 - Primi 2 personaggi e le loro abilità.
 - Stile grafico (forme semplici colorate all'inizio).

@@ -24,7 +24,13 @@
       `js/arene/prima-arena.js`), personaggio provvisorio "Recluta" (`js/personaggi/recluta.js`)
       usato da entrambi. Movimento, linea di mira, urti con muri/pilastri/avversario,
       barre della vita (ancora senza danni), contatore fps. Provata solo sul PC con
-      controller simulati: DA VERIFICARE SULLA XBOX.
+      controller simulati.
+- [x] Test Xbox v0.2.0: fluido (60 fps fissi con due giocatori), bordi ok a schermo intero,
+      velocità 420 giusta, piace che a levetta destra ferma si guardi dove si cammina.
+- [x] v0.3.0: colpo base su RT (`js/abilita/proiettile.js`, numeri nella scheda Recluta):
+      si ferma su muri e pilastri, toglie 10 di vita, lampo bianco + vibrazione a chi è colpito,
+      K.O. a vita zero con scritta del vincitore e nuovo round dopo 3 s.
+      Provata sul PC con controller simulati: DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -46,9 +52,8 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.2.0 (vedi "Da verificare" sotto), poi eventuali ritocchi.
-- [ ] Prossima sessione (dopo il test): attacco base (proiettile su RT) che si ferma sui
-      pilastri, e vita che scende.
+- [ ] Test Xbox della v0.3.0 (vedi "Da verificare" sotto), poi ritocchi ai numeri del colpo.
+- [ ] Contare i round vinti e decidere quando finisce la partita (es. al meglio di 3).
 - [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md): l'utente ci pensa con le figlie.
@@ -56,11 +61,12 @@
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] v0.2.0: i due personaggi si muovono e mirano? La velocità (420) va bene?
-- [ ] v0.2.0: quanti fps segna in alto al centro, a schermo intero? (obiettivo 60)
-- [ ] v0.2.0: a schermo intero si vede tutta l'arena o la TV taglia i bordi?
-- [ ] v0.2.0: piace che, a levetta destra ferma, il personaggio guardi dove cammina?
-      (si cambia con `MIRA_SEGUE_MOVIMENTO` in `js/gioco.js`)
+- [ ] v0.3.0: RT spara? Tenendolo premuto spara di continuo? I colpi si fermano sui pilastri?
+- [ ] v0.3.0: il colpo è troppo lento/veloce? 0,5 s tra un colpo e l'altro va bene?
+      10 colpi per vincere sono troppi o pochi?
+- [ ] v0.3.0: la vibrazione quando si è colpiti si sente ed è piacevole?
+- [ ] v0.3.0: dopo il K.O. compare la scritta e dopo 3 s riparte il round?
+- [ ] v0.3.0: con i colpi in volo restano 60 fps?
 - [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
       Se succede: aprire e chiudere la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan

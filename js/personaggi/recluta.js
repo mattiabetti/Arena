@@ -10,6 +10,9 @@ export default {
   velocita: 420,            // pixel al secondo
   raggio: 36,               // grandezza del personaggio (pixel)
 
-  // Le abilità arriveranno nelle prossime sessioni (vedi modello.js per il formato).
-  abilita: {},
+  // Abilità: per ora solo il colpo base sul grilletto destro.
+  // Tenendo premuto RT spara di continuo, un colpo ogni "ricarica" secondi.
+  abilita: {
+    RT: { nome: "Colpo", tipo: "proiettile", danno: 10, ricarica: 0.5, velocita: 900, raggio: 12, gittata: 1000 },
+  },
 };
