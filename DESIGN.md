@@ -16,12 +16,23 @@ Nessuno scopo commerciale.
 | Levetta destra    | mirare                         |
 | RT                | colpo base (tenere premuto = spara di continuo) |
 | LT, LB, RB        | abilità del personaggio        |
-| A, B, X, Y        | liberi per abilità/azioni      |
+| B                 | scatto (idea per la prossima sessione) |
+| A, X, Y           | liberi per abilità/azioni (A = rigioca a fine partita) |
 | L3+R3 insieme     | schermo intero sì/no           |
 | View / Menu       | non usati (li usa Edge)        |
 
-## Arena (provvisoria, v0.2.0)
-- Pavimento rettangolare con angoli arrotondati, 4 pilastri rotondi simmetrici.
+## Arene (v0.5.0)
+- Più arene, a ogni nuova partita si cambia (per ora a turno: Foresta, poi Arena di pietra).
+  Il nome dell'arena compare sotto "ROUND 1".
+- Le arene devono essere simmetriche: i due giocatori partono nelle stesse condizioni.
+- Foresta: radura con prato, fiori, terra battuta al centro e alle partenze, siepe come bordo.
+  Alberi al posto dei pilastri: una grande quercia al centro (blocca il tiro dritto tra
+  le partenze), 4 alberi medi e 4 alberelli vicino alle partenze per ripararsi.
+- Arena di pietra: la prima arena (pavimento scuro, muro, 4 pilastri).
+- Idee per altre arene: neve/ghiaccio, deserto, castello, spiaggia... (da decidere insieme).
+
+## Elementi comuni a tutte le arene
+- Campo rettangolare con angoli arrotondati.
 - In alto una fascia con nome, personaggio e vita dei due giocatori.
 - Giocatore 1 blu (parte a sinistra), Giocatore 2 rosso (parte a destra).
 - Linea di mira tratteggiata davanti al personaggio; se la levetta destra è ferma,

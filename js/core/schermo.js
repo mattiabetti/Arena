@@ -10,6 +10,22 @@ export function creaSchermo(canvas) {
   const ctx = canvas.getContext("2d");
   let scala = 1; // pixel reali per ogni pixel logico
 
+  // Sfondo "fisso" (es. l'arena): disegnato una volta sola in un'immagine a parte
+  // e poi solo ricopiato a ogni fotogramma. Così anche uno sfondo pieno di dettagli
+  // (erba, fiori, alberi...) non rallenta il gioco.
+  let sfondo = null; // { disegna: funzione, immagine: canvas }
+
+  function rifaiSfondo() {
+    if (!sfondo) return;
+    const img = document.createElement("canvas");
+    img.width = canvas.width;
+    img.height = canvas.height;
+    const c2 = img.getContext("2d");
+    c2.setTransform(scala, 0, 0, scala, 0, 0); // si disegna in coordinate 1920x1080
+    sfondo.disegna(c2);
+    sfondo.immagine = img;
+  }
+
   function adatta() {
     const finestraL = window.innerWidth;
     const finestraA = window.innerHeight;
@@ -23,6 +39,7 @@ export function creaSchermo(canvas) {
     canvas.width = Math.round(cssL * dpr);
     canvas.height = Math.round(cssA * dpr);
     scala = canvas.width / LARGHEZZA;
+    rifaiSfondo(); // la grandezza è cambiata: lo sfondo va ridisegnato nitido
   }
 
   window.addEventListener("resize", adatta);
@@ -36,6 +53,18 @@ export function creaSchermo(canvas) {
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.fillStyle = colore;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(scala, 0, 0, scala, 0, 0);
+    },
+    // Prepara lo sfondo fisso: "funzioneDisegno(ctx)" disegna in coordinate 1920x1080.
+    preparaSfondo(funzioneDisegno) {
+      sfondo = { disegna: funzioneDisegno, immagine: null };
+      rifaiSfondo();
+    },
+    // Da chiamare all'inizio di ogni fotogramma (al posto di inizioFotogramma).
+    disegnaSfondo() {
+      if (!sfondo || !sfondo.immagine) return this.inizioFotogramma();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.drawImage(sfondo.immagine, 0, 0);
       ctx.setTransform(scala, 0, 0, scala, 0, 0);
     },
     risoluzioneReale() {

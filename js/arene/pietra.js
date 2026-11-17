@@ -1,17 +1,19 @@
-// SCHEDA ARENA: la prima arena del gioco.
-// Contiene solo dati (forma, pilastri, punti di partenza, colori).
+// SCHEDA ARENA: "Arena di pietra" (la prima arena del gioco).
+// Contiene solo dati (forma, pilastri, punti di partenza, tema grafico).
 // Tutte le misure sono in pixel dello schermo logico 1920x1080.
-// Per provare un'arena diversa basta cambiare i numeri qui sotto.
+// REGOLA: le arene devono essere SIMMETRICHE (vedi indice.js), così i due giocatori
+// partono nelle stesse condizioni. Il gioco lo controlla da solo.
 
 export default {
-  id: "prima",
-  nome: "Prima arena",
+  id: "pietra",
+  nome: "Arena di pietra",
+  tema: "pietra",            // grafica: js/temi/pietra.js
 
   // Il pavimento: un rettangolo con gli angoli arrotondati.
   // In alto lasciamo spazio (130 pixel) per i nomi e le barre della vita.
   campo: { x: 40, y: 130, larghezza: 1840, altezza: 910, angoli: 40 },
 
-  // Pilastri rotondi: bloccano il passaggio (più avanti anche i colpi).
+  // Pilastri rotondi: bloccano il passaggio e i colpi.
   pilastri: [
     { x: 560,  y: 375, raggio: 60 },
     { x: 1360, y: 375, raggio: 60 },

@@ -2,13 +2,14 @@
 // Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
 // della loro scheda (per ora il colpo su RT). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.4.0";
-import { leggiController, vibra } from "./core/input.js?v=0.4.0";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.4.0";
-import { VERSIONE } from "./core/versione.js?v=0.4.0";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.4.0";
-import ARENA from "./arene/prima-arena.js?v=0.4.0";
-import { TIPI_ABILITA } from "./abilita/indice.js?v=0.4.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.5.0";
+import { leggiController, vibra } from "./core/input.js?v=0.5.0";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.5.0";
+import { VERSIONE } from "./core/versione.js?v=0.5.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.5.0";
+import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.5.0";
+import { TEMI } from "./temi/indice.js?v=0.5.0";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.5.0";
 
 // ---------- Impostazioni facili da cambiare ----------
 
@@ -53,9 +54,14 @@ document.addEventListener("fullscreenchange", () => {
 
 const GRADI = Math.PI / 180;
 
+// Arena in uso: si cambia a ogni nuova partita (vedi impostaArena più sotto).
+let indiceArena = 0;
+let arena = ARENE[indiceArena];
+let problemiSimmetria = [];
+
 function creaCombattente(numero) {
   const scheda = PERSONAGGI[numero % PERSONAGGI.length];
-  const partenza = ARENA.partenze[numero];
+  const partenza = arena.partenze[numero];
   return {
     numero,
     scheda,
@@ -97,7 +103,7 @@ const partita = {
 
 // "Mondo": tutto ciò che le abilità possono vedere e toccare.
 const mondo = {
-  arena: ARENA,
+  arena,
   combattenti,
   proiettili: [],
   effetti: [],      // piccoli cerchi che si allargano (impatti)
@@ -141,10 +147,45 @@ function nuovoRound() {
 }
 
 function nuovaPartita() {
+  impostaArena((indiceArena + 1) % ARENE.length); // a ogni partita un'arena diversa
   partita.round = 1;
   partita.vittorie = [0, 0];
   nuovoRound();
 }
+
+// Sceglie l'arena e prepara il suo sfondo (disegnato una volta sola).
+function impostaArena(indice) {
+  indiceArena = indice;
+  arena = ARENE[indice];
+  mondo.arena = arena;
+  problemiSimmetria = controllaSimmetria(arena);
+  schermo.preparaSfondo(disegnaSfondoArena);
+}
+
+function disegnaSfondoArena(c2) {
+  // La grafica dell'arena la fa il suo tema (js/temi/)
+  const tema = TEMI[arena.tema] || TEMI.pietra;
+  tema.disegna(c2, arena);
+
+  // Punti di partenza, nel colore del giocatore
+  arena.partenze.forEach((p, i) => {
+    c2.strokeStyle = SQUADRE[i].colore;
+    c2.globalAlpha = 0.45;
+    c2.lineWidth = 5;
+    c2.beginPath();
+    c2.arc(p.x, p.y, 60, 0, Math.PI * 2);
+    c2.stroke();
+  });
+  c2.globalAlpha = 1;
+
+  // Fascia scura in alto per nomi e barre della vita, così si leggono su ogni tema
+  c2.globalAlpha = 0.85;
+  c2.fillStyle = "#07090d";
+  c2.fillRect(0, 0, 1920, 114);
+  c2.globalAlpha = 1;
+}
+
+impostaArena(0);
 
 // ---------- Ciclo del gioco (una volta per fotogramma) ----------
 
@@ -237,7 +278,7 @@ function risolviUrti() {
     if (a.presente && b.presente) separaGiocatori(a, b);
     for (const c of combattenti) {
       if (!c.presente) continue;
-      for (const p of ARENA.pilastri) fuoriDalPilastro(c, p);
+      for (const p of arena.pilastri) fuoriDalPilastro(c, p);
       dentroAlCampo(c);
     }
   }
@@ -267,7 +308,7 @@ function fuoriDalPilastro(c, p) {
 }
 
 function dentroAlCampo(c) {
-  const k = ARENA.campo, r = c.scheda.raggio;
+  const k = arena.campo, r = c.scheda.raggio;
   c.x = Math.max(k.x + r, Math.min(k.x + k.larghezza - r, c.x));
   c.y = Math.max(k.y + r, Math.min(k.y + k.altezza - r, c.y));
 
@@ -303,8 +344,7 @@ function cerchio(x, y, r, colore) {
 }
 
 function disegna() {
-  schermo.inizioFotogramma(ARENA.colori.sfondo);
-  disegnaArena();
+  schermo.disegnaSfondo(); // arena già pronta (vedi impostaArena)
 
   // Prima chi sta più in alto, così chi è più in basso viene disegnato "davanti".
   for (const c of combattenti) disegnaMira(c);
@@ -319,6 +359,14 @@ function disegna() {
   if (partita.fase === "gioco" && partita.via > 0) disegnaVia();
   if (partita.fase === "ko") disegnaKo();
   if (partita.fase === "fine") disegnaFinePartita();
+  if (problemiSimmetria.length > 0) disegnaAvvisoSimmetria();
+}
+
+// Avviso per chi crea le arene: questa arena non è simmetrica
+function disegnaAvvisoSimmetria() {
+  fasciaScura(130, 50 + problemiSimmetria.length * 36);
+  testo("ATTENZIONE: arena \"" + arena.nome + "\" non simmetrica", 960, 158, 32, "#ff5a5a", "center", true);
+  problemiSimmetria.forEach((p, i) => testo(p, 960, 196 + i * 36, 28, "#ffb0b0", "center"));
 }
 
 // Fascia scura orizzontale dietro le scritte grandi
@@ -332,7 +380,13 @@ function fasciaScura(y, altezza) {
 function disegnaScrittaRound() {
   fasciaScura(460, 220);
   const ultimo = partita.vittorie.every((v) => v === ROUND_PER_VINCERE - 1);
-  testo(ultimo ? "ROUND DECISIVO" : "ROUND " + partita.round, 960, 570, 110, "#ffffff", "center", true);
+  if (partita.round === 1) {
+    // Primo round: si mostra anche il nome dell'arena
+    testo("ROUND 1", 960, 545, 110, "#ffffff", "center", true);
+    testo(arena.nome, 960, 635, 44, "#c4cbd8", "center");
+  } else {
+    testo(ultimo ? "ROUND DECISIVO" : "ROUND " + partita.round, 960, 570, 110, "#ffffff", "center", true);
+  }
 }
 
 function disegnaVia() {
@@ -375,67 +429,6 @@ function disegnaKo() {
   testo("Prossimo round tra " + Math.max(1, Math.ceil(partita.timer)) + "…", 960, 636, 40, "#f2f4f8", "center");
 }
 
-function disegnaArena() {
-  const k = ARENA.campo, col = ARENA.colori;
-
-  // Pavimento
-  ctx.beginPath();
-  ctx.roundRect(k.x, k.y, k.larghezza, k.altezza, k.angoli);
-  ctx.fillStyle = col.pavimento;
-  ctx.fill();
-
-  // Piastrelle: righe leggere ogni 115 pixel (dentro il pavimento)
-  ctx.save();
-  ctx.clip();
-  ctx.strokeStyle = col.piastrelle;
-  ctx.lineWidth = 3;
-  ctx.beginPath();
-  const passo = 115;
-  for (let x = k.x + passo; x < k.x + k.larghezza; x += passo) { ctx.moveTo(x, k.y); ctx.lineTo(x, k.y + k.altezza); }
-  for (let y = k.y + passo; y < k.y + k.altezza; y += passo) { ctx.moveTo(k.x, y); ctx.lineTo(k.x + k.larghezza, y); }
-  ctx.stroke();
-  ctx.restore();
-
-  // Cerchio e linea di metà campo
-  const cx = k.x + k.larghezza / 2, cy = k.y + k.altezza / 2;
-  ctx.strokeStyle = col.bordo;
-  ctx.globalAlpha = 0.5;
-  ctx.lineWidth = 5;
-  ctx.beginPath();
-  ctx.arc(cx, cy, 130, 0, Math.PI * 2);
-  ctx.moveTo(cx, k.y);
-  ctx.lineTo(cx, k.y + k.altezza);
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-
-  // Punti di partenza, nel colore del giocatore
-  ARENA.partenze.forEach((p, i) => {
-    ctx.strokeStyle = SQUADRE[i].colore;
-    ctx.globalAlpha = 0.35;
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 60, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.globalAlpha = 1;
-  });
-
-  // Muro intorno (disegnato appena fuori dal pavimento)
-  ctx.beginPath();
-  ctx.roundRect(k.x - 6, k.y - 6, k.larghezza + 12, k.altezza + 12, k.angoli + 6);
-  ctx.strokeStyle = col.bordo;
-  ctx.lineWidth = 12;
-  ctx.stroke();
-
-  // Pilastri: ombra, corpo e riflesso
-  for (const p of ARENA.pilastri) {
-    ctx.globalAlpha = 0.45;
-    cerchio(p.x + 8, p.y + 12, p.raggio, "#000");
-    ctx.globalAlpha = 1;
-    cerchio(p.x, p.y, p.raggio, col.pilastro);
-    cerchio(p.x - p.raggio * 0.12, p.y - p.raggio * 0.15, p.raggio * 0.72, col.pilastroLuce);
-  }
-}
-
 // Linea di mira tratteggiata davanti al personaggio
 // (più marcata quando si usa la levetta destra).
 function disegnaMira(c) {
@@ -445,7 +438,7 @@ function disegnaMira(c) {
   const fineX = c.x + dx * LUNGHEZZA_MIRINO, fineY = c.y + dy * LUNGHEZZA_MIRINO;
   ctx.save();
   // La linea non esce dall'arena
-  const k = ARENA.campo;
+  const k = arena.campo;
   ctx.beginPath();
   ctx.roundRect(k.x, k.y, k.larghezza, k.altezza, k.angoli);
   ctx.clip();
@@ -501,7 +494,7 @@ function disegnaCombattente(c) {
 
   // Sigla sopra la testa (sotto i piedi se il personaggio è vicino al bordo in alto,
   // altrimenti finirebbe sotto le barre della vita)
-  const siglaSotto = c.y - ARENA.campo.y < 90;
+  const siglaSotto = c.y - arena.campo.y < 90;
   testo(s.sigla, c.x, siglaSotto ? c.y + r + 26 : c.y - r - 26, 30, s.colore, "center", true);
 
   ctx.globalAlpha = 1;

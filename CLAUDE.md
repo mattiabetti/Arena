@@ -66,6 +66,20 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 - Aggiungere un personaggio = copiare `js/personaggi/modello.js`, cambiare i valori e
   registrarlo in `js/personaggi/indice.js`.
 
+## Arene
+- Ogni arena è una scheda di dati in `js/arene/` (come i personaggi), registrata in
+  `js/arene/indice.js`. A ogni nuova partita si passa all'arena successiva dell'elenco.
+- REGOLA: le arene devono essere SIMMETRICHE (allo specchio sinistra/destra oppure a
+  mezzo giro intorno al centro), pilastri e partenze compresi. `controllaSimmetria()`
+  lo verifica e, se non lo è, il gioco mostra un avviso rosso con i problemi.
+- I "pilastri" bloccano giocatori e colpi; il tema decide come appaiono (es. alberi).
+- La grafica la fa il tema (`tema: "foresta"` → `js/temi/foresta.js`, funzione
+  `disegna(ctx, arena)`). Disegna solo le parti fisse: viene disegnata UNA volta in
+  un'immagine (`schermo.preparaSfondo`) e poi ricopiata ogni fotogramma
+  (`schermo.disegnaSfondo`), così i dettagli non rallentano il gioco.
+- Decorazioni: usare `casuale(seme)` e `specchiato()` di `js/temi/utilita.js`, così sono
+  sempre uguali e simmetriche. Luce sempre da in alto a sinistra.
+
 ## Struttura cartelle
 ```
 index.html            pagina iniziale (menu)
@@ -74,7 +88,9 @@ test-controller.html  pagina di test dei controller
 css/stile.css         stile comune
 js/core/              schermo, input, utilità condivise
 js/personaggi/        schede dei personaggi
-js/arene/             schede delle arene (forma, pilastri, punti di partenza)
+js/arene/             schede delle arene (forma, pilastri, partenze, tema) + indice.js
+                      con l'elenco ARENE e il controllo della simmetria
+js/temi/              grafica delle arene (pietra.js, foresta.js...) + indice.js
 js/abilita/           codice dei TIPI di abilità (es. proiettile.js) + indice.js con l'elenco
 js/gioco.js           logica della partita
 js/test-controller.js logica della pagina di test

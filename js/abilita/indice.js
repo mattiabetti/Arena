@@ -4,6 +4,6 @@
 // usa / aggiorna / disegna (come in proiettile.js) e aggiungerlo qui sotto.
 // Le abilità con un tipo non ancora presente qui vengono semplicemente ignorate.
 
-import * as proiettile from "./proiettile.js?v=0.4.0";
+import * as proiettile from "./proiettile.js?v=0.5.0";
 
 export const TIPI_ABILITA = { proiettile };

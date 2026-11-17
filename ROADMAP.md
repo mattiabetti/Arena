@@ -34,7 +34,12 @@
 - [x] Test Xbox v0.3.0: tutto ok. Velocità del colpo, 0,5 s tra i colpi e 10 colpi per vincere
       vanno bene; vibrazione si sente e non dà fastidio; 60 fps fissi.
 - [x] v0.4.0: partita al meglio di 3 (scritte ROUND N / VIA! / vince il round / vince la
-      partita, pallini dei round vinti, A per rigiocare). DA VERIFICARE SULLA XBOX.
+      partita, pallini dei round vinti, A per rigiocare).
+- [x] Test Xbox v0.4.0: tutto ok, anche ROUND DECISIVO; scritte ben leggibili.
+- [x] v0.5.0: arena "Foresta" (tema grafico js/temi/foresta.js, alberi come pilastri) e
+      più arene a rotazione (Foresta, Arena di pietra). Sfondo disegnato una volta sola.
+      Controllo automatico della simmetria (avviso rosso se un'arena non lo è).
+      Provata sul PC: DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -56,19 +61,20 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.4.0 (vedi "Da verificare" sotto).
-- [ ] Prossimi passi possibili: seconda abilità per la Recluta (es. scatto su LT), oppure
-      decidere i primi 2 personaggi veri con le figlie.
+- [ ] Test Xbox della v0.5.0 (vedi "Da verificare" sotto).
+- [ ] Prossima sessione: scatto sul tasto B (deciso dall'utente: B, non LT, per lasciare
+      il grilletto sinistro a un altro tipo di abilità).
+- [ ] Altre arene (simmetriche), da inventare insieme. Poi forse un menu per scegliere l'arena.
+- [ ] Decidere i primi 2 personaggi veri con le figlie.
 - [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md): l'utente ci pensa con le figlie.
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] v0.4.0: si vedono "ROUND 1" e "VIA!"? I pallini dei round vinti si riempiono?
-- [ ] v0.4.0: sull'1–1 compare "ROUND DECISIVO"? (non ancora provato nemmeno sul PC)
-- [ ] v0.4.0: a fine partita, premendo A riparte da ROUND 1 con 0–0?
-- [ ] v0.4.0: i tempi (1,5 s di "ROUND N", 3 s dopo il K.O.) sono giusti?
+- [ ] v0.5.0: la Foresta piace? Si distinguono bene giocatori e colpi sull'erba?
+- [ ] v0.5.0: restano 60 fps anche nella Foresta?
+- [ ] v0.5.0: dopo una partita, premendo A si passa all'Arena di pietra (e poi di nuovo Foresta)?
 - [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
       Se succede: aprire e chiudere la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan
