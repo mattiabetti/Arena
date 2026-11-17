@@ -45,7 +45,11 @@
       (LT, corpo a corpo con spinta) e "scatto" (B). Aspetti disegnati (js/aspetti/).
       Primi due personaggi: Fatina (stellina con scia, bacchetta, ali animate) e Guerriera
       (bolla, spada). Icone delle ricariche nella fascia in alto. Recluta eliminata.
-      Provata sul PC con controller simulati: DA VERIFICARE SULLA XBOX.
+      Provata sul PC con controller simulati.
+- [x] v0.7.0: schermata di scelta dei personaggi (js/scelta.js) con immagini animate e
+      descrizione delle abilità; scelte esclusive; a fine partita A = rivincita,
+      X = cambia personaggi. Numeri uguali per tutti i personaggi (richiesta dell'utente).
+      Provata sul PC con controller simulati: DA VERIFICARE SULLA XBOX (insieme alla v0.6.0).
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -67,8 +71,8 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.6.0 (vedi "Da verificare" sotto), poi ritocchi ai numeri.
-- [ ] Menu di scelta del personaggio prima della partita (ora G1 = Fatina, G2 = Guerriera).
+- [ ] Test Xbox della v0.7.0 (vedi "Da verificare" sotto).
+- [ ] Bilanciamento dei personaggi: più avanti, quando lo decide l'utente.
 - [ ] Abilità su LB / RB (es. scudo, area) per dare più varietà ai personaggi.
 - [ ] Altre arene (simmetriche), da inventare insieme. Poi forse un menu per scegliere l'arena.
 - [ ] Decidere i primi 2 personaggi veri con le figlie.
@@ -81,7 +85,9 @@
 - [ ] v0.6.0: la nuova grandezza dei personaggi va bene?
 - [ ] v0.6.0: Fatina e Guerriera piacciono? Si capisce chi è chi (anello blu/rosso)?
 - [ ] v0.6.0: scatto (B), bacchetta e spada (LT) funzionano e sono divertenti?
-- [ ] v0.6.0: i due personaggi sono equilibrati, o uno vince troppo facilmente?
+- [ ] v0.7.0: la schermata di scelta si capisce? Le scritte si leggono dal divano?
+- [ ] v0.7.0: non si riesce a scegliere lo stesso personaggio? B annulla la scelta?
+- [ ] v0.7.0: a fine partita A (rivincita) e X (cambia personaggi) funzionano?
 - [ ] v0.6.0: restano 60 fps con tutti gli effetti?
 - [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
       Se succede: aprire e chiudere la Guida con il tasto Xbox.

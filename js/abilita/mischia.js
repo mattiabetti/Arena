@@ -8,7 +8,7 @@
 //   spinta   = quanto forte spinge indietro chi viene colpito
 //   aspetto  = "spada" (fendente argentato) oppure "bacchetta" (arco di stelline)
 
-import { stella } from "../core/disegno.js?v=0.6.0";
+import { stella } from "../core/disegno.js?v=0.7.0";
 
 const DURATA_FENDENTE = 0.18; // secondi dell'animazione del colpo
 

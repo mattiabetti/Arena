@@ -2,15 +2,16 @@
 // Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
 // della loro scheda (colpo su RT, corpo a corpo su LT, scatto su B). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.6.0";
-import { leggiController, vibra } from "./core/input.js?v=0.6.0";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.6.0";
-import { VERSIONE } from "./core/versione.js?v=0.6.0";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.6.0";
-import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.6.0";
-import { TEMI } from "./temi/indice.js?v=0.6.0";
-import { TIPI_ABILITA } from "./abilita/indice.js?v=0.6.0";
-import { ASPETTI } from "./aspetti/indice.js?v=0.6.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.7.0";
+import { leggiController, vibra } from "./core/input.js?v=0.7.0";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.7.0";
+import { VERSIONE } from "./core/versione.js?v=0.7.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.0";
+import { creaScelta } from "./scelta.js?v=0.7.0";
+import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.7.0";
+import { TEMI } from "./temi/indice.js?v=0.7.0";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.7.0";
+import { ASPETTI } from "./aspetti/indice.js?v=0.7.0";
 
 // ---------- Impostazioni facili da cambiare ----------
 
@@ -60,8 +61,11 @@ let indiceArena = 0;
 let arena = ARENE[indiceArena];
 let problemiSimmetria = [];
 
+// Personaggi scelti dai due giocatori (li decide la schermata di scelta)
+let schedeScelte = [PERSONAGGI[0], PERSONAGGI[1 % PERSONAGGI.length]];
+
 function creaCombattente(numero) {
-  const scheda = PERSONAGGI[numero % PERSONAGGI.length];
+  const scheda = schedeScelte[numero];
   const partenza = arena.partenze[numero];
   return {
     numero,
@@ -93,13 +97,15 @@ function rimettiInPartenza(c) {
 const combattenti = [creaCombattente(0), creaCombattente(1)];
 
 // Stato della partita. Le fasi sono:
+//   "scelta" = schermata di scelta dei personaggi (js/scelta.js)
 //   "inizio" = scritta "ROUND N", giocatori fermi
 //   "gioco"  = si combatte
 //   "ko"     = pausa dopo un K.O., prima del round successivo
-//   "fine"   = qualcuno ha vinto la partita: si aspetta A per rigiocare
+//   "fine"   = qualcuno ha vinto la partita: A = rivincita, X = cambia personaggi
 const partita = {
-  fase: "inizio",
-  timer: DURATA_INIZIO_ROUND,
+  fase: "scelta",
+  timer: 0,
+  partiteGiocate: 0, // per cambiare arena dalla seconda partita in poi
   round: 1,
   vittorie: [0, 0],  // round vinti da Giocatore 1 e Giocatore 2
   vincitore: null,   // chi ha vinto l'ultimo round (o la partita)
@@ -155,7 +161,9 @@ function nuovoRound() {
 }
 
 function nuovaPartita() {
-  impostaArena((indiceArena + 1) % ARENE.length); // a ogni partita un'arena diversa
+  // A ogni partita un'arena diversa (la prima partita usa la prima arena)
+  if (partita.partiteGiocate > 0) impostaArena((indiceArena + 1) % ARENE.length);
+  partita.partiteGiocate++;
   partita.round = 1;
   partita.vittorie = [0, 0];
   nuovoRound();
@@ -195,6 +203,17 @@ function disegnaSfondoArena(c2) {
 
 impostaArena(0);
 
+// Schermata di scelta: quando entrambi hanno scelto, parte la partita
+const scelta = creaScelta({
+  ctx,
+  testo,
+  squadre: SQUADRE,
+  alConfermare(schede) {
+    schedeScelte = schede;
+    nuovaPartita();
+  },
+});
+
 // ---------- Ciclo del gioco (una volta per fotogramma) ----------
 
 let ultimoTempo = performance.now();
@@ -230,8 +249,18 @@ function aggiorna(giocatori, dt) {
     partita.round++;
     nuovoRound();
   } else if (partita.fase === "fine" && partita.timer <= 0) {
-    // Basta che uno dei due giocatori prema A
+    // Basta che uno dei due giocatori prema A (rivincita) o X (cambia personaggi)
     if (giocatori.some((g) => g.collegato && g.tasti.A.appenaPremuto)) nuovaPartita();
+    else if (giocatori.some((g) => g.collegato && g.tasti.X.appenaPremuto)) {
+      partita.fase = "scelta";
+      scelta.ricomincia();
+    }
+  }
+
+  if (partita.fase === "scelta") {
+    scelta.aggiorna(giocatori, dt);
+    giocatori.forEach((g, i) => { combattenti[i].presente = g.collegato; });
+    return;
   }
 
   giocatori.forEach((g, i) => {
@@ -371,6 +400,11 @@ function cerchio(x, y, r, colore) {
 }
 
 function disegna() {
+  if (partita.fase === "scelta") {
+    schermo.inizioFotogramma("#0b0f16");
+    scelta.disegna(mondo.tempo);
+    return;
+  }
   schermo.disegnaSfondo(); // arena già pronta (vedi impostaArena)
 
   // Prima chi sta più in alto, così chi è più in basso viene disegnato "davanti".
@@ -431,7 +465,7 @@ function disegnaFinePartita() {
   testo("VINCE LA PARTITA!", 960, 530, 72, "#ffffff", "center", true);
   testo(partita.vittorie[0] + "  –  " + partita.vittorie[1], 960, 625, 64, "#c4cbd8", "center", true);
   if (partita.timer <= 0) {
-    testo("Premi A per giocare ancora", 960, 730, 44, "#5bd45b", "center", true);
+    testo("A: rivincita   ·   X: cambia personaggi", 960, 730, 44, "#5bd45b", "center", true);
   }
 }
 

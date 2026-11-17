@@ -22,19 +22,24 @@ Nessuno scopo commerciale.
 | L3+R3 insieme     | schermo intero sì/no           |
 | View / Menu       | non usati (li usa Edge)        |
 
-## Personaggi (v0.6.0)
-Tutti: vita 100, velocità 420, raggio 26. Il colore del giocatore (blu/rosso) è l'anello per
+## Scelta dei personaggi (v0.7.0)
+- Dopo "Gioca" compare "SCEGLI IL PERSONAGGIO": una scheda per personaggio con immagine
+  animata, nome, descrizione e abilità (tasto, nome, breve spiegazione).
+- Ogni giocatore sposta il suo riquadro (G1 blu, G2 rosso) con la levetta sinistra o le
+  frecce, conferma con A, annulla con B. Un personaggio già scelto non si può prendere.
+- Quando sono pronti entrambi: "Si combatte!" e parte la partita.
+- A fine partita: A = rivincita (stessi personaggi, arena successiva), X = torna alla scelta.
+
+## Personaggi (v0.7.0)
+PER ORA tutti hanno gli stessi numeri, cambiano solo aspetto ed effetti (il bilanciamento
+verrà più avanti): vita 100, velocità 420, raggio 26; RT danno 10, ogni 0,5 s, velocità 900,
+grandezza 12; LT danno 15, portata 60, spicchio 120°, spinta 600, ricarica 1 s;
+B scatto 260 pixel, ricarica 3 s. Il colore del giocatore (blu/rosso) è l'anello per
 terra e la sigla G1/G2; il personaggio ha i suoi colori.
-- **Fatina** (lilla, ali che sbattono, bacchetta con stellina): veloce e precisa.
-  RT Stellina (gira e lascia una scia luccicante): danno 8, ogni 0,4 s, velocità 1000.
-  LT Bacchetta: danno 12, corta (50), spicchio 110°, spinta 500, ricarica 0,8 s.
-  B Scatto: 280 pixel, ricarica 3 s.
+- **Fatina** (lilla, ali che sbattono, bacchetta con stellina): RT Stellina (gira e lascia
+  una scia luccicante), LT Bacchetta (arco di stelline), B Scatto.
 - **Guerriera** (nome provvisorio; personaggio originale ispirato alle eroine combattenti
-  con la spada): colpi lenti ma forti.
-  RT Bolla (lanciata col braccio, lenta e grande): danno 14, ogni 0,8 s, velocità 650.
-  LT Spada: danno 18, portata 70, spicchio 140°, spinta 700, ricarica 1 s.
-  B Scatto: 240 pixel, ricarica 3 s.
-- Per ora il Giocatore 1 è la Fatina e il Giocatore 2 la Guerriera (manca il menu di scelta).
+  con la spada): RT Bolla (lanciata col braccio), LT Spada (fendente argentato), B Scatto.
 - Nella fascia in alto, accanto al nome del personaggio, le icone LT / B / RT: colorate
   quando l'abilità è pronta, scure mentre si ricarica.
 

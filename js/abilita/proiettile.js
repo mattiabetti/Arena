@@ -12,7 +12,7 @@
 //              luccicante) oppure "bolla" (bolla trasparente che ondeggia)
 //   colore   = (facoltativo) colore del colpo; se manca, il colore del giocatore
 
-import { stella, cerchio } from "../core/disegno.js?v=0.6.0";
+import { stella, cerchio } from "../core/disegno.js?v=0.7.0";
 
 // Chiamata quando il giocatore preme il tasto dell'abilità (e la ricarica è finita).
 export function usa(c, dati, mondo) {

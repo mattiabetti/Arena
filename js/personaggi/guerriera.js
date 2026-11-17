@@ -1,23 +1,28 @@
 // PERSONAGGIO: Guerriera (nome provvisorio: si può cambiare qui sotto).
-// Colpi più lenti ma più forti: bolla grande da lanciare, fendente di spada largo.
+// Per ora tutti i personaggi hanno gli STESSI numeri (danno, velocità, grandezza):
+// cambiano solo aspetto ed effetti. Il bilanciamento verrà più avanti.
 
 export default {
   id: "guerriera",
   nome: "Guerriera",
   aspetto: "guerriera",     // disegno: js/aspetti/guerriera.js
-  colore: "#1f7a80",        // colore "di riconoscimento" (verde acqua)
+  colore: "#3fb8bf",        // colore "di riconoscimento" (verde acqua)
+  descrizione: "Combattente con la spada",
   vita: 100,
   velocita: 420,            // pixel al secondo
   raggio: 26,               // grandezza del personaggio (pixel)
 
   abilita: {
-    // Grilletto destro: lancia con il braccio una bolla (lenta, grande, forte)
-    RT: { nome: "Bolla", tipo: "proiettile", aspetto: "bolla", colore: "#7fe3ff",
-          danno: 14, ricarica: 0.8, velocita: 650, raggio: 18, gittata: 900 },
-    // Grilletto sinistro: colpo di spada (corpo a corpo, largo e forte)
-    LT: { nome: "Spada", tipo: "mischia", aspetto: "spada", colore: "#e4ebf3",
-          danno: 18, portata: 70, ampiezza: 140, spinta: 700, ricarica: 1 },
+    // Grilletto destro: lancia con il braccio una bolla
+    RT: { nome: "Bolla", descrizione: "lancia una bolla con il braccio",
+          tipo: "proiettile", aspetto: "bolla", colore: "#7fe3ff",
+          danno: 10, ricarica: 0.5, velocita: 900, raggio: 12, gittata: 1000 },
+    // Grilletto sinistro: colpo di spada (corpo a corpo)
+    LT: { nome: "Spada", descrizione: "fendente di spada, spinge via",
+          tipo: "mischia", aspetto: "spada", colore: "#e4ebf3",
+          danno: 15, portata: 60, ampiezza: 120, spinta: 600, ricarica: 1 },
     // B: scatto
-    B:  { nome: "Scatto", tipo: "scatto", distanza: 240, durata: 0.15, ricarica: 3 },
+    B:  { nome: "Scatto", descrizione: "scatto velocissimo",
+          tipo: "scatto", distanza: 260, durata: 0.15, ricarica: 3 },
   },
 };

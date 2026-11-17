@@ -7,8 +7,8 @@
 //   disegna(ctx, mondo)                         disegno sopra i personaggi (facoltativa)
 // Le abilità con un tipo non ancora presente qui vengono semplicemente ignorate.
 
-import * as proiettile from "./proiettile.js?v=0.6.0";
-import * as mischia from "./mischia.js?v=0.6.0";
-import * as scatto from "./scatto.js?v=0.6.0";
+import * as proiettile from "./proiettile.js?v=0.7.0";
+import * as mischia from "./mischia.js?v=0.7.0";
+import * as scatto from "./scatto.js?v=0.7.0";
 
 export const TIPI_ABILITA = { proiettile, mischia, scatto };

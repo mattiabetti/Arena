@@ -69,6 +69,13 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
   `js/aspetti/indice.js`): si disegna girato verso destra, la rotazione lo volta verso la
   mira. Anello colorato del giocatore, ombra, sigla e lampo li disegna gioco.js per tutti.
 - Grandezza personaggi: raggio 26 (deciso dopo il test: 36 era troppo grosso).
+- PER ORA tutti i personaggi hanno gli stessi numeri (vita, velocità, danno, velocità e
+  grandezza dei colpi, corpo a corpo, scatto): cambiano solo aspetto ed effetti.
+  Il bilanciamento verrà più avanti, solo quando lo chiede l'utente.
+- Ogni scheda ha `descrizione` (personaggio) e `descrizione` per abilità: si vedono nella
+  schermata di scelta.
+- Schermata di scelta: dentro gioco.html (non una pagina a parte, così schermo intero e
+  controlli di gioco restano attivi). Due giocatori non possono scegliere lo stesso personaggio.
 - Comandi comuni: RT colpo a distanza, LT corpo a corpo, B scatto.
 - Aggiungere un personaggio = copiare `js/personaggi/modello.js`, cambiare i valori e
   registrarlo in `js/personaggi/indice.js`.
@@ -101,6 +108,7 @@ js/temi/              grafica delle arene (pietra.js, foresta.js...) + indice.js
 js/abilita/           codice dei TIPI di abilità (proiettile, mischia, scatto) + indice.js
 js/aspetti/           disegno dei personaggi (base, fatina, guerriera) + indice.js
 js/gioco.js           logica della partita
+js/scelta.js          schermata di scelta dei personaggi (fase "scelta" della partita)
 js/test-controller.js logica della pagina di test
 CLAUDE.md DESIGN.md ROADMAP.md
 .nojekyll             dice a GitHub Pages di pubblicare i file così come sono

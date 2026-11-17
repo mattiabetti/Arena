@@ -3,7 +3,7 @@
 // Si disegna "girati verso destra" (x positiva = davanti): ci pensa la rotazione
 // a voltarla nella direzione della mira. y positiva = il suo fianco destro.
 
-import { cerchio, stella } from "../core/disegno.js?v=0.6.0";
+import { cerchio, stella } from "../core/disegno.js?v=0.7.0";
 
 const COLORI = {
   ala: "rgba(190, 240, 255, 0.55)",
