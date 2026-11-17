@@ -30,7 +30,11 @@
 - [x] v0.3.0: colpo base su RT (`js/abilita/proiettile.js`, numeri nella scheda Recluta):
       si ferma su muri e pilastri, toglie 10 di vita, lampo bianco + vibrazione a chi è colpito,
       K.O. a vita zero con scritta del vincitore e nuovo round dopo 3 s.
-      Provata sul PC con controller simulati: DA VERIFICARE SULLA XBOX.
+      Provata sul PC con controller simulati.
+- [x] Test Xbox v0.3.0: tutto ok. Velocità del colpo, 0,5 s tra i colpi e 10 colpi per vincere
+      vanno bene; vibrazione si sente e non dà fastidio; 60 fps fissi.
+- [x] v0.4.0: partita al meglio di 3 (scritte ROUND N / VIA! / vince il round / vince la
+      partita, pallini dei round vinti, A per rigiocare). DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -52,21 +56,19 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.3.0 (vedi "Da verificare" sotto), poi ritocchi ai numeri del colpo.
-- [ ] Contare i round vinti e decidere quando finisce la partita (es. al meglio di 3).
+- [ ] Test Xbox della v0.4.0 (vedi "Da verificare" sotto).
+- [ ] Prossimi passi possibili: seconda abilità per la Recluta (es. scatto su LT), oppure
+      decidere i primi 2 personaggi veri con le figlie.
 - [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
 - [ ] Capire se Edge ricorda la modalità "controlli di gioco" per il sito o va scelta ogni volta.
 - [ ] Decidere i primi 2 personaggi (DESIGN.md): l'utente ci pensa con le figlie.
-- [ ] Round, vittoria, schermata di fine partita.
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] v0.3.0: RT spara? Tenendolo premuto spara di continuo? I colpi si fermano sui pilastri?
-- [ ] v0.3.0: il colpo è troppo lento/veloce? 0,5 s tra un colpo e l'altro va bene?
-      10 colpi per vincere sono troppi o pochi?
-- [ ] v0.3.0: la vibrazione quando si è colpiti si sente ed è piacevole?
-- [ ] v0.3.0: dopo il K.O. compare la scritta e dopo 3 s riparte il round?
-- [ ] v0.3.0: con i colpi in volo restano 60 fps?
+- [ ] v0.4.0: si vedono "ROUND 1" e "VIA!"? I pallini dei round vinti si riempiono?
+- [ ] v0.4.0: sull'1–1 compare "ROUND DECISIVO"? (non ancora provato nemmeno sul PC)
+- [ ] v0.4.0: a fine partita, premendo A riparte da ROUND 1 con 0–0?
+- [ ] v0.4.0: i tempi (1,5 s di "ROUND N", 3 s dopo il K.O.) sono giusti?
 - [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
       Se succede: aprire e chiudere la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan

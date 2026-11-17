@@ -2,13 +2,13 @@
 // Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
 // della loro scheda (per ora il colpo su RT). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.3.0";
-import { leggiController, vibra } from "./core/input.js?v=0.3.0";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.3.0";
-import { VERSIONE } from "./core/versione.js?v=0.3.0";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.3.0";
-import ARENA from "./arene/prima-arena.js?v=0.3.0";
-import { TIPI_ABILITA } from "./abilita/indice.js?v=0.3.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.4.0";
+import { leggiController, vibra } from "./core/input.js?v=0.4.0";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.4.0";
+import { VERSIONE } from "./core/versione.js?v=0.4.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.4.0";
+import ARENA from "./arene/prima-arena.js?v=0.4.0";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.4.0";
 
 // ---------- Impostazioni facili da cambiare ----------
 
@@ -19,8 +19,18 @@ const MIRA_SEGUE_MOVIMENTO = true;
 // Lunghezza della linea di mira davanti al personaggio (pixel).
 const LUNGHEZZA_MIRINO = 260;
 
-// Secondi di pausa dopo un K.O., prima di ricominciare.
+// Secondi di pausa dopo un K.O., prima del round successivo.
 const PAUSA_DOPO_KO = 3;
+
+// Round da vincere per vincere la partita (2 = "al meglio di 3").
+const ROUND_PER_VINCERE = 2;
+
+// Secondi della scritta "ROUND N" a inizio round (intanto i giocatori sono fermi).
+const DURATA_INIZIO_ROUND = 1.5;
+
+// A fine partita, dopo quanti secondi si può premere A per giocare ancora
+// (così non si riparte per sbaglio mentre si stava sparando).
+const ATTESA_RIGIOCA = 1.5;
 
 // Colori dei due giocatori: Giocatore 1 blu, Giocatore 2 rosso.
 const SQUADRE = [
@@ -71,8 +81,19 @@ function rimettiInPartenza(c) {
 
 const combattenti = [creaCombattente(0), creaCombattente(1)];
 
-// Stato della partita: "gioco" mentre si combatte, "ko" durante la pausa dopo un K.O.
-const partita = { fase: "gioco", timer: 0, vincitore: null };
+// Stato della partita. Le fasi sono:
+//   "inizio" = scritta "ROUND N", giocatori fermi
+//   "gioco"  = si combatte
+//   "ko"     = pausa dopo un K.O., prima del round successivo
+//   "fine"   = qualcuno ha vinto la partita: si aspetta A per rigiocare
+const partita = {
+  fase: "inizio",
+  timer: DURATA_INIZIO_ROUND,
+  round: 1,
+  vittorie: [0, 0],  // round vinti da Giocatore 1 e Giocatore 2
+  vincitore: null,   // chi ha vinto l'ultimo round (o la partita)
+  via: 0,            // secondi della scritta "VIA!" a inizio combattimento
+};
 
 // "Mondo": tutto ciò che le abilità possono vedere e toccare.
 const mondo = {
@@ -94,20 +115,35 @@ const mondo = {
 };
 
 function koDi(sconfitto, vincitore) {
-  partita.fase = "ko";
-  partita.timer = PAUSA_DOPO_KO;
   partita.vincitore = vincitore;
+  partita.vittorie[vincitore.numero]++;
   mondo.proiettili = [];
   mondo.effetto(sconfitto.x, sconfitto.y, "#ffffff", 4);
   vibra(sconfitto.numero, 500, 1, 1);
+
+  if (partita.vittorie[vincitore.numero] >= ROUND_PER_VINCERE) {
+    // Partita finita
+    partita.fase = "fine";
+    partita.timer = ATTESA_RIGIOCA;
+  } else {
+    partita.fase = "ko";
+    partita.timer = PAUSA_DOPO_KO;
+  }
 }
 
 function nuovoRound() {
   for (const c of combattenti) rimettiInPartenza(c);
   mondo.proiettili = [];
   mondo.effetti = [];
-  partita.fase = "gioco";
+  partita.fase = "inizio";
+  partita.timer = DURATA_INIZIO_ROUND;
   partita.vincitore = null;
+}
+
+function nuovaPartita() {
+  partita.round = 1;
+  partita.vittorie = [0, 0];
+  nuovoRound();
 }
 
 // ---------- Ciclo del gioco (una volta per fotogramma) ----------
@@ -133,10 +169,19 @@ function ciclo(adesso) {
 }
 
 function aggiorna(giocatori, dt) {
-  // Pausa dopo un K.O.: si aspetta e poi si ricomincia
-  if (partita.fase === "ko") {
-    partita.timer -= dt;
-    if (partita.timer <= 0) nuovoRound();
+  partita.timer -= dt;
+  partita.via = Math.max(0, partita.via - dt);
+
+  if (partita.fase === "inizio" && partita.timer <= 0) {
+    // Fine della scritta "ROUND N": si combatte!
+    partita.fase = "gioco";
+    partita.via = 0.8;
+  } else if (partita.fase === "ko" && partita.timer <= 0) {
+    partita.round++;
+    nuovoRound();
+  } else if (partita.fase === "fine" && partita.timer <= 0) {
+    // Basta che uno dei due giocatori prema A
+    if (giocatori.some((g) => g.collegato && g.tasti.A.appenaPremuto)) nuovaPartita();
   }
 
   giocatori.forEach((g, i) => {
@@ -270,7 +315,42 @@ function disegna() {
   disegnaEffetti();
 
   disegnaIntestazione();
+  if (partita.fase === "inizio") disegnaScrittaRound();
+  if (partita.fase === "gioco" && partita.via > 0) disegnaVia();
   if (partita.fase === "ko") disegnaKo();
+  if (partita.fase === "fine") disegnaFinePartita();
+}
+
+// Fascia scura orizzontale dietro le scritte grandi
+function fasciaScura(y, altezza) {
+  ctx.globalAlpha = 0.7;
+  ctx.fillStyle = "#000";
+  ctx.fillRect(0, y, 1920, altezza);
+  ctx.globalAlpha = 1;
+}
+
+function disegnaScrittaRound() {
+  fasciaScura(460, 220);
+  const ultimo = partita.vittorie.every((v) => v === ROUND_PER_VINCERE - 1);
+  testo(ultimo ? "ROUND DECISIVO" : "ROUND " + partita.round, 960, 570, 110, "#ffffff", "center", true);
+}
+
+function disegnaVia() {
+  // "VIA!" che svanisce
+  ctx.globalAlpha = Math.min(1, partita.via / 0.4);
+  testo("VIA!", 960, 570, 130, "#ffd23f", "center", true);
+  ctx.globalAlpha = 1;
+}
+
+function disegnaFinePartita() {
+  const v = partita.vincitore.squadra;
+  fasciaScura(330, 470);
+  testo(v.nome, 960, 420, 120, v.colore, "center", true);
+  testo("VINCE LA PARTITA!", 960, 530, 72, "#ffffff", "center", true);
+  testo(partita.vittorie[0] + "  –  " + partita.vittorie[1], 960, 625, 64, "#c4cbd8", "center", true);
+  if (partita.timer <= 0) {
+    testo("Premi A per giocare ancora", 960, 730, 44, "#5bd45b", "center", true);
+  }
 }
 
 // Impatti: un anello che si allarga e svanisce
@@ -290,12 +370,9 @@ function disegnaEffetti() {
 // Scritta grande dopo il K.O.
 function disegnaKo() {
   const v = partita.vincitore.squadra;
-  ctx.globalAlpha = 0.7;
-  ctx.fillStyle = "#000";
-  ctx.fillRect(0, 440, 1920, 260);
-  ctx.globalAlpha = 1;
-  testo(v.nome + " VINCE!", 960, 540, 96, v.colore, "center", true);
-  testo("Nuovo round tra " + Math.max(1, Math.ceil(partita.timer)) + "…", 960, 636, 40, "#f2f4f8", "center");
+  fasciaScura(440, 260);
+  testo(v.nome + " VINCE IL ROUND!", 960, 540, 84, v.colore, "center", true);
+  testo("Prossimo round tra " + Math.max(1, Math.ceil(partita.timer)) + "…", 960, 636, 40, "#f2f4f8", "center");
 }
 
 function disegnaArena() {
@@ -479,7 +556,23 @@ function disegnaIntestazione() {
   }
 
   // Al centro: titolo, versione e fotogrammi al secondo (per controllare la fluidità sulla Xbox)
-  testo("ARENA", 960, 40, 44, "#ffffff", "center", true);
+  testo("ROUND " + partita.round, 960, 40, 44, "#ffffff", "center", true);
+
+  // Round vinti: due pallini per giocatore, accanto alle barre della vita (pieni = vinti)
+  for (const c of combattenti) {
+    for (let n = 0; n < ROUND_PER_VINCERE; n++) {
+      const x = c.numero === 0 ? 722 + n * 36 : 1198 - n * 36;
+      ctx.beginPath();
+      ctx.arc(x, 88, 13, 0, Math.PI * 2);
+      if (n < partita.vittorie[c.numero]) {
+        ctx.fillStyle = c.squadra.colore;
+        ctx.fill();
+      }
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = c.squadra.colore;
+      ctx.stroke();
+    }
+  }
   testo("v " + VERSIONE.split(" ")[0] + "  ·  " + fps.valore + " fps", 960, 90, 26, "#8a93a6", "center");
 }
 

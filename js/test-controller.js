@@ -2,10 +2,10 @@
 // Mostra in tempo reale cosa arriva da ogni controller e permette di muovere
 // due cerchi in una mini-arena (levetta sinistra = muovi, levetta destra = mira).
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero, LARGHEZZA, ALTEZZA } from "./core/schermo.js?v=0.3.0";
-import { leggiController, vibra, ZONA_MORTA } from "./core/input.js?v=0.3.0";
-import { proteggiNavigazione, registro } from "./core/navigazione.js?v=0.3.0";
-import { VERSIONE } from "./core/versione.js?v=0.3.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero, LARGHEZZA, ALTEZZA } from "./core/schermo.js?v=0.4.0";
+import { leggiController, vibra, ZONA_MORTA } from "./core/input.js?v=0.4.0";
+import { proteggiNavigazione, registro } from "./core/navigazione.js?v=0.4.0";
+import { VERSIONE } from "./core/versione.js?v=0.4.0";
 
 const schermo = creaSchermo(document.getElementById("schermo"));
 const ctx = schermo.ctx;

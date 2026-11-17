@@ -34,11 +34,19 @@ Nessuno scopo commerciale.
 - Il colpo si ferma su muri e pilastri (ci si può riparare dietro).
 - Vita 100: servono 10 colpi. Chi viene colpito lampeggia di bianco e il suo controller vibra;
   la barra mostra in bianco la vita appena persa.
-- A vita zero: scritta "GIOCATORE X VINCE!", pausa di 3 secondi, poi nuovo round
-  (tutti al punto di partenza con la vita piena). Per ora non si contano i round vinti.
+
+## Round e partita (v0.4.0)
+- Partita al meglio di 3: vince chi vince per primo 2 round (`ROUND_PER_VINCERE` in gioco.js).
+- Inizio round: scritta "ROUND N" (o "ROUND DECISIVO" sull'1–1) per 1,5 s a giocatori fermi,
+  poi "VIA!".
+- A vita zero: "GIOCATORE X VINCE IL ROUND!", pausa di 3 s, nuovo round (tutti al punto di
+  partenza, vita piena).
+- Round vinti: due pallini per giocatore accanto alle barre della vita.
+- Fine partita: "GIOCATORE X VINCE LA PARTITA!" con il punteggio; dopo 1,5 s
+  "Premi A per giocare ancora" (A di uno qualsiasi dei due controller).
 
 ## Da decidere (insieme, nelle prossime sessioni)
-- Quanti round per partita, durata di un round.
+- Durata massima di un round (serve? per ora nessun limite di tempo).
 - Forma e ostacoli definitivi dell'arena (per ora quella provvisoria qui sopra).
 - Primi 2 personaggi e le loro abilità.
 - Stile grafico (forme semplici colorate all'inizio).
