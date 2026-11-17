@@ -8,6 +8,11 @@
 //   velocita = pixel al secondo
 //   raggio   = grandezza del colpo (pixel)
 //   gittata  = quanti pixel percorre prima di sparire
+//   aspetto  = (facoltativo) "palla" (normale), "stellina" (stella che gira con scia
+//              luccicante) oppure "bolla" (bolla trasparente che ondeggia)
+//   colore   = (facoltativo) colore del colpo; se manca, il colore del giocatore
+
+import { stella, cerchio } from "../core/disegno.js?v=0.6.0";
 
 // Chiamata quando il giocatore preme il tasto dell'abilità (e la ricarica è finita).
 export function usa(c, dati, mondo) {
@@ -15,7 +20,9 @@ export function usa(c, dati, mondo) {
   const distanzaPartenza = c.scheda.raggio + dati.raggio + 4; // parte dal bordo del personaggio
   mondo.proiettili.push({
     tiratore: c,
-    colore: c.squadra.colore,
+    colore: dati.colore ?? c.squadra.colore,
+    aspetto: dati.aspetto ?? "palla",
+    scia: [],          // ultime posizioni (per la scia della stellina)
     x: c.x + dx * distanzaPartenza,
     y: c.y + dy * distanzaPartenza,
     vx: dx * dati.velocita,
@@ -33,6 +40,8 @@ export function aggiorna(mondo, dt) {
   const k = arena.campo;
 
   mondo.proiettili = mondo.proiettili.filter((p) => {
+    p.scia.unshift({ x: p.x, y: p.y });
+    if (p.scia.length > 12) p.scia.pop();
     p.x += p.vx * dt;
     p.y += p.vy * dt;
     p.strada += Math.hypot(p.vx, p.vy) * dt;
@@ -71,9 +80,62 @@ export function aggiorna(mondo, dt) {
   });
 }
 
-// Disegno dei colpi: alone colorato, scia e centro bianco.
+// Disegno dei colpi, secondo il loro aspetto.
 export function disegna(ctx, mondo) {
   for (const p of mondo.proiettili) {
+    if (p.aspetto === "stellina") disegnaStellina(ctx, p);
+    else if (p.aspetto === "bolla") disegnaBolla(ctx, p, mondo.tempo);
+    else disegnaPalla(ctx, p);
+  }
+  ctx.globalAlpha = 1;
+}
+
+// Stellina che gira, con una scia di brillantini
+function disegnaStellina(ctx, p) {
+  p.scia.forEach((s, i) => {
+    const quota = 1 - i / p.scia.length;
+    ctx.globalAlpha = 0.7 * quota;
+    // brillantini alternati: un po' a destra e a sinistra della traiettoria
+    const lato = (i % 2 ? 1 : -1) * 5;
+    const v = Math.hypot(p.vx, p.vy) || 1;
+    const x = s.x - (p.vy / v) * lato, y = s.y + (p.vx / v) * lato;
+    if (i % 3 === 0) stella(ctx, x, y, p.raggio * 0.6 * quota + 2, i, "#fff6c2");
+    else cerchio(ctx, x, y, p.raggio * 0.3 * quota + 1.5, i % 2 ? "#ff9ecb" : p.colore);
+  });
+  ctx.globalAlpha = 0.35;
+  cerchio(ctx, p.x, p.y, p.raggio * 1.8, p.colore);
+  ctx.globalAlpha = 1;
+  stella(ctx, p.x, p.y, p.raggio * 1.25, p.strada / 40, p.colore);
+  stella(ctx, p.x, p.y, p.raggio * 0.6, p.strada / 40, "#ffffff");
+}
+
+// Bolla trasparente che ondeggia, con riflesso bianco
+function disegnaBolla(ctx, p, tempo = 0) {
+  const onda = Math.sin(tempo * 14 + p.strada / 30) * 0.08;
+  const rx = p.raggio * (1 + onda), ry = p.raggio * (1 - onda);
+  ctx.globalAlpha = 0.45;
+  ctx.fillStyle = p.colore;
+  ctx.beginPath();
+  ctx.ellipse(p.x, p.y, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = "#ffffff";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+  // riflesso rosa sul bordo in basso a destra (come le bolle di sapone)
+  ctx.strokeStyle = "#ff9ecb";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.ellipse(p.x, p.y, rx * 0.8, ry * 0.8, 0, 0.2, 1.6);
+  ctx.stroke();
+  ctx.globalAlpha = 0.9;
+  cerchio(ctx, p.x - rx * 0.35, p.y - ry * 0.35, p.raggio * 0.25, "#ffffff");
+  ctx.globalAlpha = 1;
+}
+
+// Palla luminosa (aspetto normale): alone colorato, scia e centro bianco
+function disegnaPalla(ctx, p) {
+  {
     const velocita = Math.hypot(p.vx, p.vy) || 1;
     const sx = (p.vx / velocita) * 34, sy = (p.vy / velocita) * 34;
 

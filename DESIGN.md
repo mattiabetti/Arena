@@ -14,12 +14,29 @@ Nessuno scopo commerciale.
 |-------------------|--------------------------------|
 | Levetta sinistra  | muoversi                       |
 | Levetta destra    | mirare                         |
-| RT                | colpo base (tenere premuto = spara di continuo) |
+| RT                | colpo a distanza (tenere premuto = spara di continuo) |
+| LT                | attacco corpo a corpo (spinge indietro) |
 | LT, LB, RB        | abilità del personaggio        |
-| B                 | scatto (idea per la prossima sessione) |
+| B                 | scatto (nella direzione in cui ci si muove, o della mira) |
 | A, X, Y           | liberi per abilità/azioni (A = rigioca a fine partita) |
 | L3+R3 insieme     | schermo intero sì/no           |
 | View / Menu       | non usati (li usa Edge)        |
+
+## Personaggi (v0.6.0)
+Tutti: vita 100, velocità 420, raggio 26. Il colore del giocatore (blu/rosso) è l'anello per
+terra e la sigla G1/G2; il personaggio ha i suoi colori.
+- **Fatina** (lilla, ali che sbattono, bacchetta con stellina): veloce e precisa.
+  RT Stellina (gira e lascia una scia luccicante): danno 8, ogni 0,4 s, velocità 1000.
+  LT Bacchetta: danno 12, corta (50), spicchio 110°, spinta 500, ricarica 0,8 s.
+  B Scatto: 280 pixel, ricarica 3 s.
+- **Guerriera** (nome provvisorio; personaggio originale ispirato alle eroine combattenti
+  con la spada): colpi lenti ma forti.
+  RT Bolla (lanciata col braccio, lenta e grande): danno 14, ogni 0,8 s, velocità 650.
+  LT Spada: danno 18, portata 70, spicchio 140°, spinta 700, ricarica 1 s.
+  B Scatto: 240 pixel, ricarica 3 s.
+- Per ora il Giocatore 1 è la Fatina e il Giocatore 2 la Guerriera (manca il menu di scelta).
+- Nella fascia in alto, accanto al nome del personaggio, le icone LT / B / RT: colorate
+  quando l'abilità è pronta, scure mentre si ricarica.
 
 ## Arene (v0.5.0)
 - Più arene, a ogni nuova partita si cambia (per ora a turno: Foresta, poi Arena di pietra).

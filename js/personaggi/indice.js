@@ -1,11 +1,9 @@
 // Elenco dei personaggi giocabili.
 // Per aggiungerne uno: importalo qui sotto e mettilo nell'elenco PERSONAGGI.
-// Esempio:
-//   import guerriera from "./guerriera.js?v=0.5.0";
-//   export const PERSONAGGI = [recluta, guerriera];
 // Finché non c'è il menu di scelta, il Giocatore 1 usa il primo dell'elenco
-// e il Giocatore 2 il secondo (se c'è, altrimenti di nuovo il primo).
+// e il Giocatore 2 il secondo.
 
-import recluta from "./recluta.js?v=0.5.0";
+import fatina from "./fatina.js?v=0.6.0";
+import guerriera from "./guerriera.js?v=0.6.0";
 
-export const PERSONAGGI = [recluta];
+export const PERSONAGGI = [fatina, guerriera];

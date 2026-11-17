@@ -1,15 +1,16 @@
 // Pagina della partita.
 // Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
-// della loro scheda (per ora il colpo su RT). Chi porta a zero la vita dell'altro vince il round.
+// della loro scheda (colpo su RT, corpo a corpo su LT, scatto su B). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.5.0";
-import { leggiController, vibra } from "./core/input.js?v=0.5.0";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.5.0";
-import { VERSIONE } from "./core/versione.js?v=0.5.0";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.5.0";
-import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.5.0";
-import { TEMI } from "./temi/indice.js?v=0.5.0";
-import { TIPI_ABILITA } from "./abilita/indice.js?v=0.5.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.6.0";
+import { leggiController, vibra } from "./core/input.js?v=0.6.0";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.6.0";
+import { VERSIONE } from "./core/versione.js?v=0.6.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.6.0";
+import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.6.0";
+import { TEMI } from "./temi/indice.js?v=0.6.0";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.6.0";
+import { ASPETTI } from "./aspetti/indice.js?v=0.6.0";
 
 // ---------- Impostazioni facili da cambiare ----------
 
@@ -75,6 +76,10 @@ function creaCombattente(numero) {
     lampo: 0,          // secondi di "lampo bianco" dopo essere stato colpito
     presente: false,   // c'è un controller collegato per questo giocatore?
     mirando: false,    // la levetta destra è mossa?
+    forzato: null,     // movimento che sostituisce la levetta (es. durante lo scatto)
+    spinta: null,      // spinta ricevuta da un colpo, che si smorza piano piano
+    ombre: [],         // "ombre" lasciate dallo scatto
+    fendente: null,    // colpo corpo a corpo in corso
   };
 }
 
@@ -107,16 +112,19 @@ const mondo = {
   combattenti,
   proiettili: [],
   effetti: [],      // piccoli cerchi che si allargano (impatti)
+  tempo: 0,         // secondi passati dall'apertura della pagina (per le animazioni)
   effetto(x, y, colore, forza = 1) {
     mondo.effetti.push({ x, y, colore, forza, t: 0, durata: 0.3 });
   },
+  // Toglie vita a un personaggio. Restituisce true se il colpo è andato a segno.
   colpisci(bersaglio, danno, colpo) {
-    if (partita.fase !== "gioco") return;
+    if (partita.fase !== "gioco") return false;
     bersaglio.vita = Math.max(0, bersaglio.vita - danno);
     bersaglio.lampo = 0.15;
     mondo.effetto(colpo.x, colpo.y, colpo.colore, 1.8);
     vibra(bersaglio.numero, 140, 0.6, 0.9);
     if (bersaglio.vita === 0) koDi(bersaglio, colpo.tiratore);
+    return true;
   },
 };
 
@@ -173,7 +181,7 @@ function disegnaSfondoArena(c2) {
     c2.globalAlpha = 0.45;
     c2.lineWidth = 5;
     c2.beginPath();
-    c2.arc(p.x, p.y, 60, 0, Math.PI * 2);
+    c2.arc(p.x, p.y, 46, 0, Math.PI * 2);
     c2.stroke();
   });
   c2.globalAlpha = 1;
@@ -210,6 +218,7 @@ function ciclo(adesso) {
 }
 
 function aggiorna(giocatori, dt) {
+  mondo.tempo += dt;
   partita.timer -= dt;
   partita.via = Math.max(0, partita.via - dt);
 
@@ -232,11 +241,29 @@ function aggiorna(giocatori, dt) {
     c.lampo = Math.max(0, c.lampo - dt);
     // La barra della vita "rincorre" la vita vera (si vede quanto si è appena perso)
     if (c.vitaMostrata > c.vita) c.vitaMostrata = Math.max(c.vita, c.vitaMostrata - 25 * dt);
-    if (!g.collegato || partita.fase !== "gioco") return;
 
-    // Movimento: la levetta sinistra dà direzione e velocità
-    c.x += g.sinistra.x * c.scheda.velocita * dt;
-    c.y += g.sinistra.y * c.scheda.velocita * dt;
+    // Spinta ricevuta da un colpo: sposta il personaggio e si smorza velocemente
+    if (c.spinta) {
+      c.x += c.spinta.vx * dt;
+      c.y += c.spinta.vy * dt;
+      const smorza = Math.exp(-9 * dt);
+      c.spinta.vx *= smorza;
+      c.spinta.vy *= smorza;
+      if (Math.hypot(c.spinta.vx, c.spinta.vy) < 20) c.spinta = null;
+    }
+
+    if (!g.collegato || partita.fase !== "gioco") { c.forzato = null; return; }
+
+    // Movimento: di solito la levetta sinistra; durante uno scatto, il movimento "forzato"
+    if (c.forzato) {
+      c.x += c.forzato.vx * dt;
+      c.y += c.forzato.vy * dt;
+      c.forzato.tempo -= dt;
+      if (c.forzato.tempo <= 0) c.forzato = null;
+    } else {
+      c.x += g.sinistra.x * c.scheda.velocita * dt;
+      c.y += g.sinistra.y * c.scheda.velocita * dt;
+    }
 
     // Mira
     if (g.destra.intensita > 0) {
@@ -253,7 +280,7 @@ function aggiorna(giocatori, dt) {
       const tipo = TIPI_ABILITA[dati.tipo];
       if (!tipo || !g.tasti[tasto]) continue;
       if (g.tasti[tasto].premuto && c.ricariche[tasto] === 0) {
-        tipo.usa(c, dati, mondo);
+        tipo.usa(c, dati, mondo, g);
         c.ricariche[tasto] = dati.ricarica;
       }
     }
@@ -348,6 +375,7 @@ function disegna() {
 
   // Prima chi sta più in alto, così chi è più in basso viene disegnato "davanti".
   for (const c of combattenti) disegnaMira(c);
+  for (const tipo of Object.values(TIPI_ABILITA)) tipo.disegnaSotto?.(ctx, mondo);
   const inOrdine = [...combattenti].sort((a, b) => a.y - b.y);
   for (const c of inOrdine) disegnaCombattente(c);
 
@@ -470,32 +498,34 @@ function disegnaCombattente(c) {
   // Ombra
   ctx.globalAlpha *= 0.45;
   ctx.beginPath();
-  ctx.ellipse(c.x + 4, c.y + r * 0.75, r * 0.95, r * 0.45, 0, 0, Math.PI * 2);
+  ctx.ellipse(c.x + 5, c.y + 8, r * 1.05, r * 0.9, 0, 0, Math.PI * 2);
   ctx.fillStyle = "#000";
   ctx.fill();
   ctx.globalAlpha = fantasma ? 0.3 : (sconfitto ? 0.45 : 1);
 
-  const dx = Math.cos(c.mira), dy = Math.sin(c.mira);
-
-  // Punta che indica dove guarda
+  // Anello del colore del giocatore, per terra (così si sa sempre chi è chi)
+  ctx.strokeStyle = sconfitto ? "#6b7385" : s.colore;
+  ctx.lineWidth = 5;
   ctx.beginPath();
-  ctx.moveTo(c.x + dx * (r + 18), c.y + dy * (r + 18));
-  ctx.lineTo(c.x + Math.cos(c.mira + 0.55) * (r - 2), c.y + Math.sin(c.mira + 0.55) * (r - 2));
-  ctx.lineTo(c.x + Math.cos(c.mira - 0.55) * (r - 2), c.y + Math.sin(c.mira - 0.55) * (r - 2));
-  ctx.closePath();
-  ctx.fillStyle = s.colore;
-  ctx.fill();
+  ctx.arc(c.x, c.y, r + 8, 0, Math.PI * 2);
+  ctx.stroke();
 
-  // Corpo: bordo scuro, interno colorato, simbolo del personaggio al centro
-  const colorePieno = c.lampo > 0 ? "#ffffff" : (sconfitto ? "#6b7385" : s.colore);
-  cerchio(c.x, c.y, r, sconfitto ? "#3a4052" : s.scuro);
-  cerchio(c.x, c.y, r - 6, colorePieno);
-  cerchio(c.x, c.y, r * 0.32, c.scheda.colore);
+  // Il personaggio vero e proprio: lo disegna il suo "aspetto" (js/aspetti/)
+  const aspetto = ASPETTI[c.scheda.aspetto] || ASPETTI.base;
+  aspetto.disegna(ctx, c, { tempo: mondo.tempo });
+
+  // Lampo bianco quando viene colpito
+  if (c.lampo > 0) {
+    const prima = ctx.globalAlpha;
+    ctx.globalAlpha = prima * 0.7;
+    cerchio(c.x, c.y, r * 0.95, "#ffffff");
+    ctx.globalAlpha = prima;
+  }
 
   // Sigla sopra la testa (sotto i piedi se il personaggio è vicino al bordo in alto,
   // altrimenti finirebbe sotto le barre della vita)
   const siglaSotto = c.y - arena.campo.y < 90;
-  testo(s.sigla, c.x, siglaSotto ? c.y + r + 26 : c.y - r - 26, 30, s.colore, "center", true);
+  testo(s.sigla, c.x, siglaSotto ? c.y + r + 34 : c.y - r - 34, 30, s.colore, "center", true);
 
   ctx.globalAlpha = 1;
 
@@ -504,6 +534,37 @@ function disegnaCombattente(c) {
     testo("Premi un tasto", c.x, c.y + r + 40, 30, "#f2f4f8", "center");
     testo("sul controller " + (c.numero + 1), c.x, c.y + r + 76, 30, "#f2f4f8", "center");
   }
+}
+
+// Ordine delle icone delle abilità (da sinistra a destra, come sul controller)
+const ORDINE_TASTI = ["LB", "LT", "A", "B", "X", "Y", "RT", "RB"];
+
+// Un riquadro con il nome del tasto: pieno quando l'abilità è pronta,
+// scuro e con una barra che si riempie mentre si ricarica.
+function disegnaIconaAbilita(x, y, tasto, c) {
+  const larghezza = 70, altezza = 40;
+  const dati = c.scheda.abilita[tasto];
+  const manca = c.ricariche[tasto] || 0;
+  const pronta = manca === 0;
+  ctx.beginPath();
+  ctx.roundRect(x, y, larghezza, altezza, 8);
+  ctx.fillStyle = pronta ? c.squadra.scuro : "#1a1f2a";
+  ctx.fill();
+  if (!pronta) {
+    const quota = 1 - manca / dati.ricarica; // da 0 (appena usata) a 1 (pronta)
+    ctx.save();
+    ctx.clip();
+    ctx.globalAlpha *= 0.6;
+    ctx.fillStyle = c.squadra.scuro;
+    ctx.fillRect(x, y + altezza * (1 - quota), larghezza, altezza * quota);
+    ctx.restore();
+  }
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = pronta ? c.squadra.colore : "#3a4256";
+  ctx.beginPath();
+  ctx.roundRect(x, y, larghezza, altezza, 8);
+  ctx.stroke();
+  testo(tasto, x + larghezza / 2, y + altezza / 2 + 1, 26, pronta ? "#ffffff" : "#7d8699", "center", true);
 }
 
 // Fascia in alto: nome, personaggio e vita dei due giocatori
@@ -517,6 +578,17 @@ function disegnaIntestazione() {
     ctx.globalAlpha = c.presente ? 1 : 0.4;
     testo(s.nome, bordoX, 36, 34, s.colore, allinea, true);
     testo(c.scheda.nome, bordoX + (aSinistra ? 250 : -250), 37, 30, "#c4cbd8", allinea);
+
+    // Icone delle abilità accanto al nome del personaggio
+    ctx.font = '30px "Segoe UI", system-ui, sans-serif';
+    const larghezzaNome = ctx.measureText(c.scheda.nome).width;
+    const tasti = ORDINE_TASTI.filter((t) => c.scheda.abilita[t]);
+    const totale = tasti.length * 78 - 8;
+    let xIcona = aSinistra ? bordoX + 250 + larghezzaNome + 24 : bordoX - 250 - larghezzaNome - 24 - totale;
+    for (const tasto of tasti) {
+      disegnaIconaAbilita(xIcona, 16, tasto, c);
+      xIcona += 78;
+    }
 
     // Barra della vita
     const larghezza = 640, altezza = 36, y = 70;

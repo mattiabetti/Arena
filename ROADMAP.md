@@ -39,7 +39,13 @@
 - [x] v0.5.0: arena "Foresta" (tema grafico js/temi/foresta.js, alberi come pilastri) e
       più arene a rotazione (Foresta, Arena di pietra). Sfondo disegnato una volta sola.
       Controllo automatico della simmetria (avviso rosso se un'arena non lo è).
-      Provata sul PC: DA VERIFICARE SULLA XBOX.
+      Provata sul PC.
+- [x] Test Xbox v0.5.0: tutto ok. Personaggi troppo grossi rispetto all'arena.
+- [x] v0.6.0: personaggi più piccoli (raggio 36 -> 26). Nuovi tipi di abilità: "mischia"
+      (LT, corpo a corpo con spinta) e "scatto" (B). Aspetti disegnati (js/aspetti/).
+      Primi due personaggi: Fatina (stellina con scia, bacchetta, ali animate) e Guerriera
+      (bolla, spada). Icone delle ricariche nella fascia in alto. Recluta eliminata.
+      Provata sul PC con controller simulati: DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -61,9 +67,9 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.5.0 (vedi "Da verificare" sotto).
-- [ ] Prossima sessione: scatto sul tasto B (deciso dall'utente: B, non LT, per lasciare
-      il grilletto sinistro a un altro tipo di abilità).
+- [ ] Test Xbox della v0.6.0 (vedi "Da verificare" sotto), poi ritocchi ai numeri.
+- [ ] Menu di scelta del personaggio prima della partita (ora G1 = Fatina, G2 = Guerriera).
+- [ ] Abilità su LB / RB (es. scudo, area) per dare più varietà ai personaggi.
 - [ ] Altre arene (simmetriche), da inventare insieme. Poi forse un menu per scegliere l'arena.
 - [ ] Decidere i primi 2 personaggi veri con le figlie.
 - [ ] Idea da valutare: schermo intero automatico premendo A sulla schermata iniziale del gioco.
@@ -72,9 +78,11 @@
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
-- [ ] v0.5.0: la Foresta piace? Si distinguono bene giocatori e colpi sull'erba?
-- [ ] v0.5.0: restano 60 fps anche nella Foresta?
-- [ ] v0.5.0: dopo una partita, premendo A si passa all'Arena di pietra (e poi di nuovo Foresta)?
+- [ ] v0.6.0: la nuova grandezza dei personaggi va bene?
+- [ ] v0.6.0: Fatina e Guerriera piacciono? Si capisce chi è chi (anello blu/rosso)?
+- [ ] v0.6.0: scatto (B), bacchetta e spada (LT) funzionano e sono divertenti?
+- [ ] v0.6.0: i due personaggi sono equilibrati, o uno vince troppo facilmente?
+- [ ] v0.6.0: restano 60 fps con tutti gli effetti?
 - [x] Confermato: premere View fa perdere il "fuoco" alla pagina (per questo non lo usiamo).
       Se succede: aprire e chiudere la Guida con il tasto Xbox.
 - [ ] Consigliato da altri progetti: in Impostazioni Xbox disattivare il bordo di overscan
