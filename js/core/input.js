@@ -114,9 +114,14 @@ export function leggiController() {
 }
 
 // Vibrazione del controller del giocatore (0 = Giocatore 1). Se non è supportata non fa nulla.
+// Vibrazioni troppo ravvicinate vengono saltate (non servono e intasano il controller).
+const ultimaVibrazione = [0, 0];
 export function vibra(giocatore, durataMs = 200, forte = 1, debole = 1) {
   const indice = posti[giocatore];
   if (indice === null) return;
+  const adesso = performance.now();
+  if (adesso - ultimaVibrazione[giocatore] < 100) return;
+  ultimaVibrazione[giocatore] = adesso;
   const gp = navigator.getGamepads()[indice];
   const att = gp && gp.vibrationActuator;
   if (!att || !att.playEffect) return;

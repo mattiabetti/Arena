@@ -2,16 +2,16 @@
 // Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
 // della loro scheda (colpo su RT, corpo a corpo su LT, scatto su B). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.7.0";
-import { leggiController, vibra } from "./core/input.js?v=0.7.0";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.7.0";
-import { VERSIONE } from "./core/versione.js?v=0.7.0";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.0";
-import { creaScelta } from "./scelta.js?v=0.7.0";
-import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.7.0";
-import { TEMI } from "./temi/indice.js?v=0.7.0";
-import { TIPI_ABILITA } from "./abilita/indice.js?v=0.7.0";
-import { ASPETTI } from "./aspetti/indice.js?v=0.7.0";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.7.1";
+import { leggiController, vibra } from "./core/input.js?v=0.7.1";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.7.1";
+import { VERSIONE } from "./core/versione.js?v=0.7.1";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.1";
+import { creaScelta } from "./scelta.js?v=0.7.1";
+import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.7.1";
+import { TEMI } from "./temi/indice.js?v=0.7.1";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.7.1";
+import { ASPETTI } from "./aspetti/indice.js?v=0.7.1";
 
 // ---------- Impostazioni facili da cambiare ----------
 
@@ -399,10 +399,21 @@ function cerchio(x, y, r, colore) {
   ctx.fill();
 }
 
+// Numeri di controllo: versione, fotogrammi al secondo, memoria usata (e risoluzione).
+// Servono per capire sulla Xbox se il gioco è leggero e se la memoria cresce col tempo.
+function infoControllo(conRisoluzione) {
+  const parti = ["v " + VERSIONE.split(" ")[0], fps.valore + " fps"];
+  if (conRisoluzione) parti.push(schermo.risoluzioneReale());
+  const memoria = performance.memory && performance.memory.usedJSHeapSize;
+  if (memoria) parti.push(Math.round(memoria / 1048576) + " MB");
+  return parti.join("  ·  ");
+}
+
 function disegna() {
   if (partita.fase === "scelta") {
     schermo.inizioFotogramma("#0b0f16");
     scelta.disegna(mondo.tempo);
+    testo(infoControllo(true), 30, 30, 24, "#6b7385", "left");
     return;
   }
   schermo.disegnaSfondo(); // arena già pronta (vedi impostaArena)
@@ -497,13 +508,17 @@ function disegnaMira(c) {
   if (!c.presente || c.vita <= 0) return;
   const r = c.scheda.raggio;
   const dx = Math.cos(c.mira), dy = Math.sin(c.mira);
-  const fineX = c.x + dx * LUNGHEZZA_MIRINO, fineY = c.y + dy * LUNGHEZZA_MIRINO;
-  ctx.save();
-  // La linea non esce dall'arena
+  // La linea non esce dall'arena: si accorcia se arriverebbe oltre il bordo
+  // (calcolato a mano: "ritagliare" il disegno costava troppo alla Xbox)
   const k = arena.campo;
-  ctx.beginPath();
-  ctx.roundRect(k.x, k.y, k.larghezza, k.altezza, k.angoli);
-  ctx.clip();
+  let lunghezza = LUNGHEZZA_MIRINO;
+  if (dx > 0) lunghezza = Math.min(lunghezza, (k.x + k.larghezza - c.x) / dx);
+  if (dx < 0) lunghezza = Math.min(lunghezza, (k.x - c.x) / dx);
+  if (dy > 0) lunghezza = Math.min(lunghezza, (k.y + k.altezza - c.y) / dy);
+  if (dy < 0) lunghezza = Math.min(lunghezza, (k.y - c.y) / dy);
+  if (lunghezza < r + 30) return;
+  const fineX = c.x + dx * lunghezza, fineY = c.y + dy * lunghezza;
+  ctx.save();
   ctx.globalAlpha = c.mirando ? 0.9 : 0.35;
   ctx.strokeStyle = c.squadra.colore;
   ctx.lineWidth = 6;
@@ -586,12 +601,11 @@ function disegnaIconaAbilita(x, y, tasto, c) {
   ctx.fill();
   if (!pronta) {
     const quota = 1 - manca / dati.ricarica; // da 0 (appena usata) a 1 (pronta)
-    ctx.save();
-    ctx.clip();
+    const piena = (altezza - 6) * quota;
     ctx.globalAlpha *= 0.6;
     ctx.fillStyle = c.squadra.scuro;
-    ctx.fillRect(x, y + altezza * (1 - quota), larghezza, altezza * quota);
-    ctx.restore();
+    ctx.fillRect(x + 3, y + 3 + (altezza - 6) - piena, larghezza - 6, piena);
+    ctx.globalAlpha /= 0.6;
   }
   ctx.lineWidth = 3;
   ctx.strokeStyle = pronta ? c.squadra.colore : "#3a4256";
@@ -672,7 +686,7 @@ function disegnaIntestazione() {
       ctx.stroke();
     }
   }
-  testo("v " + VERSIONE.split(" ")[0] + "  ·  " + fps.valore + " fps", 960, 90, 26, "#8a93a6", "center");
+  testo(infoControllo(false), 960, 90, 26, "#8a93a6", "center");
 }
 
 requestAnimationFrame(ciclo);

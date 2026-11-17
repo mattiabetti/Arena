@@ -49,7 +49,16 @@
 - [x] v0.7.0: schermata di scelta dei personaggi (js/scelta.js) con immagini animate e
       descrizione delle abilità; scelte esclusive; a fine partita A = rivincita,
       X = cambia personaggi. Numeri uguali per tutti i personaggi (richiesta dell'utente).
-      Provata sul PC con controller simulati: DA VERIFICARE SULLA XBOX (insieme alla v0.6.0).
+      Provata sul PC con controller simulati.
+- [x] Test Xbox v0.7.0: PROBLEMA GRAVE. 60-64 fps, ma comandi in ritardo casuale (anche di
+      secondi, pure nella scelta personaggi) e, tornando alla schermata Home, console lenta.
+      Causa probabile: canvas in 4K troppo pesante per Edge su Xbox (che ha poche risorse)
+      + un'immagine di sfondo 4K nuova a ogni partita / cambio di schermo intero.
+- [x] v0.7.1: correzione prestazioni. Canvas al massimo 1920x1080, una sola immagine di sfondo
+      riusata, cambi di finestra raccolti, niente ritagli (clip) nel disegno di ogni
+      fotogramma, vibrazioni ravvicinate saltate. Sul PC un fotogramma costa ~1/3 di prima.
+      Numeri di controllo a schermo (versione, fps, risoluzione, memoria).
+      DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -71,7 +80,8 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Test Xbox della v0.7.0 (vedi "Da verificare" sotto).
+- [ ] Test Xbox della v0.7.1: prima di tutto prontezza dei comandi e console dopo il gioco.
+      Se va bene, poi il resto (vedi "Da verificare" sotto).
 - [ ] Bilanciamento dei personaggi: più avanti, quando lo decide l'utente.
 - [ ] Abilità su LB / RB (es. scudo, area) per dare più varietà ai personaggi.
 - [ ] Altre arene (simmetriche), da inventare insieme. Poi forse un menu per scegliere l'arena.
@@ -82,6 +92,10 @@
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
+- [ ] v0.7.1: i comandi rispondono subito (gioco e scelta personaggi)? Anche dopo 3-4 partite?
+- [ ] v0.7.1: la memoria (MB in alto) resta più o meno uguale partita dopo partita?
+- [ ] v0.7.1: premendo il tasto Xbox dopo aver giocato, la console è veloce?
+- [ ] v0.7.1: l'immagine a 1920x1080 è abbastanza nitida sulla TV?
 - [ ] v0.6.0: la nuova grandezza dei personaggi va bene?
 - [ ] v0.6.0: Fatina e Guerriera piacciono? Si capisce chi è chi (anello blu/rosso)?
 - [ ] v0.6.0: scatto (B), bacchetta e spada (LT) funzionano e sono divertenti?

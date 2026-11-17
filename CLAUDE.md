@@ -20,6 +20,17 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
 ## Schermo
 - Risoluzione logica fissa 1920x1080. Si disegna sempre in queste coordinate.
 - `js/core/schermo.js` scala il canvas per riempire la finestra mantenendo il 16:9 (bande nere se serve).
+- PRESTAZIONI (lezione della v0.7.0): sulla Xbox Edge è un'"app" con poca scheda grafica e
+  memoria. Con il canvas in 4K il gioco segnava 60 fps ma i comandi arrivavano con secondi di
+  ritardo e la console intera rallentava. Regole:
+  - il canvas non supera MAI 1920x1080 (`SCALA_MASSIMA = 1` in schermo.js); la TV ingrandisce;
+  - niente canvas/immagini nuove durante il gioco o a ogni partita: lo sfondo è UNA immagine
+    riusata; i cambi di finestra vengono raccolti e gestiti una volta sola;
+  - niente `ctx.clip()` né ombre (`shadowBlur`) né filtri nel disegno di ogni fotogramma
+    (vanno bene solo nello sfondo, che si disegna una volta);
+  - i "numeri di controllo" (versione, fps, risoluzione, memoria) sono sempre a schermo:
+    dopo ogni novità grafica chiedere all'utente se i comandi restano pronti e la memoria
+    non cresce.
 - Arena fissa che occupa tutto lo schermo. Niente splitscreen, niente telecamera che segue.
 - Testi grandi: si guarda da un divano a qualche metro (minimo ~28 px logici).
 

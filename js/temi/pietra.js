@@ -1,7 +1,7 @@
 // TEMA "pietra": pavimento a piastrelle scure, muro grigio, pilastri di pietra.
 // Disegna solo le parti fisse dell'arena (viene disegnato una volta sola).
 
-import { cerchio } from "./utilita.js?v=0.7.0";
+import { cerchio } from "./utilita.js?v=0.7.1";
 
 export function disegna(ctx, arena) {
   const k = arena.campo, col = arena.colori;

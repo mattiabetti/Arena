@@ -4,9 +4,9 @@
 // B annulla. Due giocatori NON possono scegliere lo stesso personaggio.
 // Quando entrambi hanno confermato, dopo un attimo parte la partita.
 
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.0";
-import { ASPETTI } from "./aspetti/indice.js?v=0.7.0";
-import { vibra } from "./core/input.js?v=0.7.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.1";
+import { ASPETTI } from "./aspetti/indice.js?v=0.7.1";
+import { vibra } from "./core/input.js?v=0.7.1";
 
 // Ordine in cui sono elencate le abilità nelle schede
 const ORDINE_TASTI = ["RT", "LT", "B", "RB", "LB", "A", "X", "Y"];
