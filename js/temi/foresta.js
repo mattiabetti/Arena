@@ -5,7 +5,7 @@
 // Le decorazioni sono messe "a specchio", così anche la grafica è simmetrica.
 // La luce arriva sempre da in alto a sinistra (riflessi in alto a sinistra).
 
-import { casuale, specchiato, cerchio } from "./utilita.js?v=0.7.1";
+import { casuale, specchiato, cerchio } from "./utilita.js?v=0.8.0";
 
 const COLORI = {
   bosco: "#0c1f10",          // fuori dall'arena

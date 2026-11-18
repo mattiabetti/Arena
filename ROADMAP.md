@@ -60,6 +60,10 @@
       Numeri di controllo a schermo (versione, fps, risoluzione, memoria).
 - [x] Test Xbox v0.7.1: PROBLEMA RISOLTO. Fluido, 60-62 fps, memoria fissa a 10 MB per tutta
       la sessione; tornando ai controlli cursore e alla Home della Xbox tutto reattivo.
+- [x] v0.8.0: due nuovi personaggi, Draghetto (palla di fuoco, scodata) e Gattino (palla di
+      pelo, artigliata), stessi numeri degli altri. Schermata di scelta adattata a 4 schede.
+      Peso misurato sul PC: come la v0.7.1 (~2 ms partita, ~3 ms scelta).
+      DA VERIFICARE SULLA XBOX.
 
 ## Risultati test Xbox (v0.1.0, Edge in modalità "controlli di navigazione")
 - Edge mostra il cursore, che si muove con la levetta sinistra. A = clic.
@@ -81,8 +85,8 @@
   a schermo intero con L3+R3. Risolto.
 
 ## Da fare
-- [ ] Prossima sessione: verificare con calma le novità di v0.6/v0.7 (vedi "Da verificare"),
-      poi decidere il passo successivo (nuove arene, abilità su LB/RB, nomi dei personaggi...).
+- [ ] Test Xbox della v0.8.0 (vedi "Da verificare" sotto).
+- [ ] Poi decidere il passo successivo (nuove arene, abilità su LB/RB, nomi dei personaggi...).
 - [ ] Bilanciamento dei personaggi: più avanti, quando lo decide l'utente.
 - [ ] Abilità su LB / RB (es. scudo, area) per dare più varietà ai personaggi.
 - [ ] Altre arene (simmetriche), da inventare insieme. Poi forse un menu per scegliere l'arena.
@@ -93,6 +97,8 @@
 - [ ] Menu di scelta del personaggio.
 
 ## Bug / da verificare sulla Xbox
+- [ ] v0.8.0: comandi sempre pronti e memoria ferma anche con Draghetto e Gattino?
+- [ ] v0.8.0: Draghetto e Gattino piacciono? Si leggono bene le 4 schede nella scelta?
 - [ ] v0.7.1: l'immagine a 1920x1080 è abbastanza nitida sulla TV?
 - [ ] v0.6.0: la nuova grandezza dei personaggi va bene?
 - [ ] v0.6.0: Fatina e Guerriera piacciono? Si capisce chi è chi (anello blu/rosso)?

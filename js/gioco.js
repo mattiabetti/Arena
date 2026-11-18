@@ -2,16 +2,16 @@
 // Due giocatori si muovono (levetta sinistra), mirano (levetta destra) e usano le abilità
 // della loro scheda (colpo su RT, corpo a corpo su LT, scatto su B). Chi porta a zero la vita dell'altro vince il round.
 
-import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.7.1";
-import { leggiController, vibra } from "./core/input.js?v=0.7.1";
-import { proteggiNavigazione } from "./core/navigazione.js?v=0.7.1";
-import { VERSIONE } from "./core/versione.js?v=0.7.1";
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.1";
-import { creaScelta } from "./scelta.js?v=0.7.1";
-import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.7.1";
-import { TEMI } from "./temi/indice.js?v=0.7.1";
-import { TIPI_ABILITA } from "./abilita/indice.js?v=0.7.1";
-import { ASPETTI } from "./aspetti/indice.js?v=0.7.1";
+import { creaSchermo, collegaPulsanteSchermoIntero, controllaSchermoIntero } from "./core/schermo.js?v=0.8.0";
+import { leggiController, vibra } from "./core/input.js?v=0.8.0";
+import { proteggiNavigazione } from "./core/navigazione.js?v=0.8.0";
+import { VERSIONE } from "./core/versione.js?v=0.8.0";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.8.0";
+import { creaScelta } from "./scelta.js?v=0.8.0";
+import { ARENE, controllaSimmetria } from "./arene/indice.js?v=0.8.0";
+import { TEMI } from "./temi/indice.js?v=0.8.0";
+import { TIPI_ABILITA } from "./abilita/indice.js?v=0.8.0";
+import { ASPETTI } from "./aspetti/indice.js?v=0.8.0";
 
 // ---------- Impostazioni facili da cambiare ----------
 

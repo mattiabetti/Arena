@@ -4,8 +4,10 @@
 // (info.tempo = secondi passati, per le animazioni come ali e capelli).
 // Anello colorato, ombra, sigla G1/G2 e lampo bianco li disegna gioco.js per tutti.
 
-import * as base from "./base.js?v=0.7.1";
-import * as fatina from "./fatina.js?v=0.7.1";
-import * as guerriera from "./guerriera.js?v=0.7.1";
+import * as base from "./base.js?v=0.8.0";
+import * as fatina from "./fatina.js?v=0.8.0";
+import * as guerriera from "./guerriera.js?v=0.8.0";
+import * as draghetto from "./draghetto.js?v=0.8.0";
+import * as gattino from "./gattino.js?v=0.8.0";
 
-export const ASPETTI = { base, fatina, guerriera };
+export const ASPETTI = { base, fatina, guerriera, draghetto, gattino };

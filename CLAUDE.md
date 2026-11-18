@@ -74,8 +74,13 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
   `js/abilita/<tipo>.js` con tre funzioni `usa` / `aggiorna` / `disegna`, registrato in
   `js/abilita/indice.js`. Tipi non ancora scritti vengono ignorati.
 - Tenendo premuto il tasto, un'abilità si ripete appena finisce la sua `ricarica`.
-- Tipi esistenti: "proiettile" (aspetto palla/stellina/bolla), "mischia" (corpo a corpo,
-  aspetto spada/bacchetta, spinge indietro), "scatto". Ogni file spiega i suoi numeri.
+- Tipi esistenti: "proiettile" (aspetto palla/stellina/bolla/fuoco/pelo), "mischia" (corpo a
+  corpo, aspetto spada/bacchetta/coda/artigli, spinge indietro), "scatto". Ogni file spiega
+  i suoi numeri. Gli effetti visivi devono mostrare dove il colpo colpisce davvero (es. la
+  scodata fa la giravolta, ma la scia compare solo nello spicchio davanti).
+- Aspetti e effetti leggeri: poche forme semplici (cerchi, linee, triangoli), niente clip,
+  ombre o filtri. Dopo ogni personaggio nuovo misurare il costo di un fotogramma
+  (sul PC ~2-3 ms per la partita e la scelta, v0.8.0).
 - Il disegno del personaggio è il suo `aspetto` (`js/aspetti/<aspetto>.js`, registrato in
   `js/aspetti/indice.js`): si disegna girato verso destra, la rotazione lo volta verso la
   mira. Anello colorato del giocatore, ombra, sigla e lampo li disegna gioco.js per tutti.
@@ -84,7 +89,8 @@ A fine sessione aggiorna ROADMAP.md (fatto / da fare / bug).
   grandezza dei colpi, corpo a corpo, scatto): cambiano solo aspetto ed effetti.
   Il bilanciamento verrà più avanti, solo quando lo chiede l'utente.
 - Ogni scheda ha `descrizione` (personaggio) e `descrizione` per abilità: si vedono nella
-  schermata di scelta.
+  schermata di scelta. Tenerle CORTE (~25 caratteri): con 4 personaggi le schede sono strette
+  (i testi troppo lunghi vengono rimpiccioliti, fino a un minimo).
 - Schermata di scelta: dentro gioco.html (non una pagina a parte, così schermo intero e
   controlli di gioco restano attivi). Due giocatori non possono scegliere lo stesso personaggio.
 - Comandi comuni: RT colpo a distanza, LT corpo a corpo, B scatto.
@@ -117,7 +123,7 @@ js/arene/             schede delle arene (forma, pilastri, partenze, tema) + ind
                       con l'elenco ARENE e il controllo della simmetria
 js/temi/              grafica delle arene (pietra.js, foresta.js...) + indice.js
 js/abilita/           codice dei TIPI di abilità (proiettile, mischia, scatto) + indice.js
-js/aspetti/           disegno dei personaggi (base, fatina, guerriera) + indice.js
+js/aspetti/           disegno dei personaggi (base, fatina, guerriera, draghetto, gattino) + indice.js
 js/gioco.js           logica della partita
 js/scelta.js          schermata di scelta dei personaggi (fase "scelta" della partita)
 js/test-controller.js logica della pagina di test

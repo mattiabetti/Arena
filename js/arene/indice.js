@@ -2,8 +2,8 @@
 // Per aggiungerne una: copiare una scheda (es. foresta.js), cambiare id, nome e numeri,
 // importarla qui sotto e metterla nell'elenco ARENE.
 
-import foresta from "./foresta.js?v=0.7.1";
-import pietra from "./pietra.js?v=0.7.1";
+import foresta from "./foresta.js?v=0.8.0";
+import pietra from "./pietra.js?v=0.8.0";
 
 export const ARENE = [foresta, pietra];
 

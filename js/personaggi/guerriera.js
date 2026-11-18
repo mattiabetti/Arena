@@ -14,11 +14,11 @@ export default {
 
   abilita: {
     // Grilletto destro: lancia con il braccio una bolla
-    RT: { nome: "Bolla", descrizione: "lancia una bolla con il braccio",
+    RT: { nome: "Bolla", descrizione: "la lancia col braccio",
           tipo: "proiettile", aspetto: "bolla", colore: "#7fe3ff",
           danno: 10, ricarica: 0.5, velocita: 900, raggio: 12, gittata: 1000 },
     // Grilletto sinistro: colpo di spada (corpo a corpo)
-    LT: { nome: "Spada", descrizione: "fendente di spada, spinge via",
+    LT: { nome: "Spada", descrizione: "fendente di spada",
           tipo: "mischia", aspetto: "spada", colore: "#e4ebf3",
           danno: 15, portata: 60, ampiezza: 120, spinta: 600, ricarica: 1 },
     // B: scatto

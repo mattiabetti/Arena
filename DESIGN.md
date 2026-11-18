@@ -40,6 +40,10 @@ terra e la sigla G1/G2; il personaggio ha i suoi colori.
   una scia luccicante), LT Bacchetta (arco di stelline), B Scatto.
 - **Guerriera** (nome provvisorio; personaggio originale ispirato alle eroine combattenti
   con la spada): RT Bolla (lanciata col braccio), LT Spada (fendente argentato), B Scatto.
+- **Draghetto** (verde, alette, cornetti, coda a freccia che scodinzola): RT Palla di fuoco
+  (con fiammelle dietro), LT Scodata (fa una giravolta; la coda colpisce davanti), B Scatto.
+- **Gattino** (arancione tigrato, coda che ondeggia): RT Palla di pelo (rotola), LT Artigliata
+  (allunga la zampa, tre graffi bianchi), B Scatto.
 - Nella fascia in alto, accanto al nome del personaggio, le icone LT / B / RT: colorate
   quando l'abilità è pronta, scure mentre si ricarica.
 

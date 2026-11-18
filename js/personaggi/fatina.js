@@ -7,18 +7,18 @@ export default {
   nome: "Fatina",
   aspetto: "fatina",        // disegno: js/aspetti/fatina.js
   colore: "#c79bff",        // colore "di riconoscimento" (lilla)
-  descrizione: "Piccola fata con le ali che sbattono",
+  descrizione: "Fata dalle ali luccicanti",
   vita: 100,
   velocita: 420,            // pixel al secondo
   raggio: 26,               // grandezza del personaggio (pixel)
 
   abilita: {
     // Grilletto destro: stellina che gira e lascia una scia luccicante
-    RT: { nome: "Stellina", descrizione: "lancia una stellina luccicante",
+    RT: { nome: "Stellina", descrizione: "stellina luccicante",
           tipo: "proiettile", aspetto: "stellina", colore: "#ffd84a",
           danno: 10, ricarica: 0.5, velocita: 900, raggio: 12, gittata: 1000 },
     // Grilletto sinistro: colpo di bacchetta (corpo a corpo)
-    LT: { nome: "Bacchetta", descrizione: "colpo di bacchetta, spinge via",
+    LT: { nome: "Bacchetta", descrizione: "colpo di bacchetta",
           tipo: "mischia", aspetto: "bacchetta", colore: "#ffd84a",
           danno: 15, portata: 60, ampiezza: 120, spinta: 600, ricarica: 1 },
     // B: scatto

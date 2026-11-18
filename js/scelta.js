@@ -4,9 +4,9 @@
 // B annulla. Due giocatori NON possono scegliere lo stesso personaggio.
 // Quando entrambi hanno confermato, dopo un attimo parte la partita.
 
-import { PERSONAGGI } from "./personaggi/indice.js?v=0.7.1";
-import { ASPETTI } from "./aspetti/indice.js?v=0.7.1";
-import { vibra } from "./core/input.js?v=0.7.1";
+import { PERSONAGGI } from "./personaggi/indice.js?v=0.8.0";
+import { ASPETTI } from "./aspetti/indice.js?v=0.8.0";
+import { vibra } from "./core/input.js?v=0.8.0";
 
 // Ordine in cui sono elencate le abilità nelle schede
 const ORDINE_TASTI = ["RT", "LT", "B", "RB", "LB", "A", "X", "Y"];
@@ -167,8 +167,10 @@ export function creaScelta({ ctx, testo, squadre, alConfermare }) {
     const cx = x + larghezza / 2;
 
     // Nome e descrizione
-    testo(scheda.nome, cx, y + 70, 54, scheda.colore, "center", true);
-    if (scheda.descrizione) testo(scheda.descrizione, cx, y + 120, 28, "#c4cbd8", "center");
+    testo(scheda.nome, cx, y + 70, misura(scheda.nome, 54, larghezza - 40, true), scheda.colore, "center", true);
+    if (scheda.descrizione) {
+      testo(scheda.descrizione, cx, y + 120, misura(scheda.descrizione, 28, larghezza - 30), "#c4cbd8", "center");
+    }
 
     // Il personaggio, ingrandito e animato, su un piccolo "palco"
     const yFigura = y + 265;
@@ -194,17 +196,23 @@ export function creaScelta({ ctx, testo, squadre, alConfermare }) {
     ctx.restore();
 
     // Abilità: tasto, nome e breve descrizione
+    // (con tanti personaggi le schede sono strette: margini più piccoli e testi che si
+    // rimpiccioliscono un po' se non ci stanno)
+    const margine = larghezza < 500 ? 18 : 30;
+    const xTesto = x + margine + 82;
+    const spazioTesto = x + larghezza - 14 - xTesto;
     let yRiga = y + 420;
     for (const tasto of ORDINE_TASTI) {
       const a = scheda.abilita[tasto];
       if (!a) continue;
       ctx.beginPath();
-      ctx.roundRect(x + 30, yRiga, 70, 40, 8);
+      ctx.roundRect(x + margine, yRiga, 66, 40, 8);
       ctx.fillStyle = "#2a3242";
       ctx.fill();
-      testo(tasto, x + 65, yRiga + 21, 26, "#ffffff", "center", true);
-      testo(a.nome, x + 120, yRiga + 20, 30, "#ffffff", "left", true);
-      testo(a.descrizione || DESCRIZIONE_TIPO[a.tipo] || "", x + 120, yRiga + 56, 28, "#aab3c4", "left");
+      testo(tasto, x + margine + 33, yRiga + 21, 26, "#ffffff", "center", true);
+      testo(a.nome, xTesto, yRiga + 20, misura(a.nome, 30, spazioTesto, true), "#ffffff", "left", true);
+      const spiegazione = a.descrizione || DESCRIZIONE_TIPO[a.tipo] || "";
+      testo(spiegazione, xTesto, yRiga + 56, misura(spiegazione, 28, spazioTesto), "#aab3c4", "left");
       yRiga += 88;
     }
 
@@ -216,6 +224,14 @@ export function creaScelta({ ctx, testo, squadre, alConfermare }) {
       ctx.fill();
       testo(squadre[confermataDa].sigla + "  SCELTO", cx, y + altezza + 2, 34, "#ffffff", "center", true);
     }
+  }
+
+  // Grandezza del testo perché stia in "larghezzaMassima" (mai sotto 22)
+  function misura(t, dimensione, larghezzaMassima, grassetto = false) {
+    ctx.font = `${grassetto ? "bold " : ""}${dimensione}px "Segoe UI", system-ui, sans-serif`;
+    const l = ctx.measureText(t).width;
+    if (l <= larghezzaMassima) return dimensione;
+    return Math.max(22, Math.floor(dimensione * larghezzaMassima / l));
   }
 
   return { aggiorna, disegna, ricomincia };

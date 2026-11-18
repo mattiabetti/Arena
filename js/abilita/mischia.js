@@ -6,9 +6,10 @@
 //   portata  = quanti pixel arriva oltre il bordo del personaggio
 //   ampiezza = larghezza dello spicchio, in gradi (180 = mezzo cerchio davanti)
 //   spinta   = quanto forte spinge indietro chi viene colpito
-//   aspetto  = "spada" (fendente argentato) oppure "bacchetta" (arco di stelline)
+//   aspetto  = "spada" (fendente argentato), "bacchetta" (arco di stelline),
+//              "coda" (scodata: arco verde a giro completo) oppure "artigli" (tre graffi)
 
-import { stella } from "../core/disegno.js?v=0.7.1";
+import { stella } from "../core/disegno.js?v=0.8.0";
 
 const DURATA_FENDENTE = 0.18; // secondi dell'animazione del colpo
 
@@ -55,7 +56,44 @@ export function disegna(ctx, mondo) {
     const raggio = c.scheda.raggio + f.dati.portata * 0.75;
     ctx.save();
     ctx.globalAlpha = 1 - avanzamento * 0.8;
-    if (f.dati.aspetto === "bacchetta") {
+    if (f.dati.aspetto === "coda") {
+      // Scodata: il draghetto fa una giravolta (vedi aspetti/draghetto.js); la coda, che parte
+      // da dietro, passa davanti a metà giro: la scia verde compare solo lì, dove colpisce.
+      const giro = Math.PI * 2 * Math.min(1, avanzamento);
+      const arrivaDavanti = Math.PI - f.ampiezza / 2;
+      if (giro > arrivaDavanti) {
+        const da = f.mira - f.ampiezza / 2;
+        const a = da + Math.min(giro - arrivaDavanti, f.ampiezza);
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#4fae3e";
+        ctx.lineWidth = 14;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, raggio, da, a);
+        ctx.stroke();
+        ctx.strokeStyle = "#ff8c42";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, raggio, da, a);
+        ctx.stroke();
+      }
+    } else if (f.dati.aspetto === "artigli") {
+      // Artigliata: tre graffi bianchi paralleli davanti al gattino, che si allungano
+      const dx = Math.cos(f.mira), dy = Math.sin(f.mira);
+      const cx = c.x + dx * raggio, cy = c.y + dy * raggio;
+      const ga = f.mira + Math.PI / 2 + 0.6;          // direzione del graffio (di traverso)
+      const gx = Math.cos(ga), gy = Math.sin(ga);
+      const lungo = 30 * Math.min(1, avanzamento * 2);
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      for (const spostamento of [-14, 0, 14]) {
+        const sx = cx + dx * spostamento, sy = cy + dy * spostamento;
+        ctx.moveTo(sx - gx * lungo, sy - gy * lungo);
+        ctx.lineTo(sx + gx * lungo, sy + gy * lungo);
+      }
+      ctx.stroke();
+    } else if (f.dati.aspetto === "bacchetta") {
       // Arco di stelline dorate
       ctx.strokeStyle = "#ffe066";
       ctx.lineWidth = 5;

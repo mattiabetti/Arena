@@ -9,10 +9,11 @@
 //   raggio   = grandezza del colpo (pixel)
 //   gittata  = quanti pixel percorre prima di sparire
 //   aspetto  = (facoltativo) "palla" (normale), "stellina" (stella che gira con scia
-//              luccicante) oppure "bolla" (bolla trasparente che ondeggia)
+//              luccicante), "bolla" (bolla trasparente che ondeggia), "fuoco" (palla di
+//              fuoco con fiammelle dietro) oppure "pelo" (palla di pelo che rotola)
 //   colore   = (facoltativo) colore del colpo; se manca, il colore del giocatore
 
-import { stella, cerchio } from "../core/disegno.js?v=0.7.1";
+import { stella, cerchio } from "../core/disegno.js?v=0.8.0";
 
 // Chiamata quando il giocatore preme il tasto dell'abilità (e la ricarica è finita).
 export function usa(c, dati, mondo) {
@@ -85,6 +86,8 @@ export function disegna(ctx, mondo) {
   for (const p of mondo.proiettili) {
     if (p.aspetto === "stellina") disegnaStellina(ctx, p);
     else if (p.aspetto === "bolla") disegnaBolla(ctx, p, mondo.tempo);
+    else if (p.aspetto === "fuoco") disegnaFuoco(ctx, p, mondo.tempo);
+    else if (p.aspetto === "pelo") disegnaPelo(ctx, p);
     else disegnaPalla(ctx, p);
   }
   ctx.globalAlpha = 1;
@@ -107,6 +110,41 @@ function disegnaStellina(ctx, p) {
   ctx.globalAlpha = 1;
   stella(ctx, p.x, p.y, p.raggio * 1.25, p.strada / 40, p.colore);
   stella(ctx, p.x, p.y, p.raggio * 0.6, p.strada / 40, "#ffffff");
+}
+
+// Palla di fuoco: fiammelle dietro (sempre più piccole e rosse), centro giallo che tremola.
+// Solo 4 fiammelle + 3 cerchi: leggera.
+function disegnaFuoco(ctx, p, tempo = 0) {
+  const COLORI_SCIA = ["#ffb020", "#ff7a1a", "#e8441c", "#a8261a"];
+  for (let i = 0; i < 4; i++) {
+    const s = p.scia[2 + i * 2];
+    if (!s) break;
+    ctx.globalAlpha = 0.75 - i * 0.15;
+    cerchio(ctx, s.x, s.y, p.raggio * (0.85 - i * 0.17), COLORI_SCIA[i]);
+  }
+  const tremola = 1 + 0.12 * Math.sin(tempo * 40 + p.strada);
+  ctx.globalAlpha = 1;
+  cerchio(ctx, p.x, p.y, p.raggio * 1.15 * tremola, "#ff6a1a");
+  cerchio(ctx, p.x, p.y, p.raggio * 0.75, "#ffc93a");
+  cerchio(ctx, p.x, p.y, p.raggio * 0.35, "#fff6d0");
+}
+
+// Palla di pelo che rotola: cerchio peloso con qualche ciuffo che gira mentre avanza
+function disegnaPelo(ctx, p) {
+  const giro = p.strada / 25;
+  cerchio(ctx, p.x, p.y, p.raggio, "#b89a7a");
+  cerchio(ctx, p.x - p.raggio * 0.2, p.y - p.raggio * 0.25, p.raggio * 0.55, "#d8c0a2");
+  ctx.strokeStyle = "#8a6d52";
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const a = giro + (i * Math.PI) / 3;
+    ctx.moveTo(p.x + Math.cos(a) * p.raggio * 0.75, p.y + Math.sin(a) * p.raggio * 0.75);
+    ctx.lineTo(p.x + Math.cos(a + 0.4) * p.raggio * 1.3, p.y + Math.sin(a + 0.4) * p.raggio * 1.3);
+  }
+  ctx.stroke();
+  ctx.lineCap = "butt";
 }
 
 // Bolla trasparente che ondeggia, con riflesso bianco

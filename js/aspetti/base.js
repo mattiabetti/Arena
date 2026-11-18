@@ -1,7 +1,7 @@
 // ASPETTO "base": un cerchio nel colore del giocatore con una punta che indica la mira.
 // Usato dai personaggi che non hanno (ancora) un disegno tutto loro.
 
-import { cerchio } from "../core/disegno.js?v=0.7.1";
+import { cerchio } from "../core/disegno.js?v=0.8.0";
 
 export function disegna(ctx, c) {
   const r = c.scheda.raggio;
